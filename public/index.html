@@ -1,0 +1,43 @@
+
+
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+</head>
+
+<body>
+    <div id="map"></div>
+    <div>
+        <form id='send-form'>
+            <input id='send-message' />
+            <input id='send-button' type='submit' value='Send'/>
+        </form>
+    </div>
+
+<script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+<script type="text/javascript" src="/javascripts/map.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.0.min.js"></script></script>
+
+<script>
+$(function(){
+    $(document).ready(function(){
+        var window_height = $(window).height();
+        var canvas_height = window_height - (window_height/8);
+        $('#map').height(canvas_height);
+        init('[]');
+    });
+});
+
+$(function(){
+    $(window).resize(function(){
+        var window_height = $(window).height();
+        var canvas_height = window_height - (window_height/8);
+        $('#map').height(canvas_height);
+    });
+});
+</script>
+</body>
+</html>

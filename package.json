@@ -1,0 +1,9 @@
+{
+"name": "winejs",
+"version": "0.0.1",
+"description": "Wine map",
+"dependencies": {
+    "socket.io": "~0.9.6",
+    "mime": "~1.2.7"
+    }
+}
