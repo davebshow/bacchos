@@ -52,9 +52,9 @@ var server = http.createServer(function(request, response) {
     var filePath = false;
 
     if (request.url == '/') {
-        filePath = 'public/index.html';
+        filePath = 'static/index.html';
     } else {
-        filePath = 'public' + request.url;
+        filePath = 'static' + request.url;
     }
     var absPath = './' + filePath;
     serveStatic(response, cache, absPath);
