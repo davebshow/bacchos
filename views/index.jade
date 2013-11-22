@@ -6,8 +6,8 @@ html(lang="en")
     body
         div#map
         div
-        form#send-form
-            input#send-message'
+        form(id=send-form, action="", method="POST")
+            input#send-message
             input(id='send-button', type='submit' value='Send')
         script(type='text/javascript', src='http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js').
         script(type='text/javascript', src='http://code.jquery.com/jquery-1.10.0.min.js').

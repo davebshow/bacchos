@@ -16,5 +16,10 @@ app.get('/ajax/map', function(request, response) {
 	console.log('SENT DATA');
 });
 
+app.post('/', function(request, response) {
+	data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]'
+	response.end(data);
+});
+
 app.listen(3000);
 console.log('Listening on port 3000');
