@@ -19,7 +19,7 @@ app.post('/ajax/map', function(req, res) {
 	var is_ajax_request = req.xhr;
 	console.log(req.xhr);
 	if (is_ajax_request) {
-		var data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]'
+		var data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]';
 		res.end(data);
 	} else {
 		res.end(403, 'forbidden')
