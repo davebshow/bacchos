@@ -33,11 +33,7 @@ html(lang="en")
                             data: postData,
                             dataType: 'json',
                             success: function(data, textStatus, jqXHR) {
-                                console.log('data');
-                                console.log(data);
-                                console.log('textStatus');
                                 console.log(textStatus);
-                                console.log('jqXHR');
                                 console.log(jqXHR.status);
                                 if (data.length>0) {
                                     for (var i=0; i<data.length; i++) {
@@ -47,21 +43,18 @@ html(lang="en")
                                 }
                             },
                             error: function(data, textStatus, jqXHR) {
-                                console.log(data);
                                 console.log(textStatus);
-                                console.log(jqXHR);
+                                console.log(jqXHR.status);
                             }
                         });
                         e.preventDefault(); //STOP default action
                     }); 
-                    $('#zipcode-form').submit();
                 }); //doc ready
-            }); // anonymous func
-
-            $(function(){
                 $(window).resize(function(){
                     var window_height = $(window).height();
                     var canvas_height = window_height - (window_height/8);
                     $('#map').height(canvas_height);
                 });
-            });
+            }); // anonymous func
+
+
