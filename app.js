@@ -13,13 +13,14 @@ app.get('/', function(req, res){
 });
 
 app.post('/ajax/map', function(req, res) {
-	//console.log(req.params[0]);
 	console.log(req.body);
-	//console.log(req.route);
-	//console.log(req.cookie);
-	data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]'
-	res.end(data);
-	console.log('SENT DATA');
+	var is_ajax_request = req.xhr;
+	console.log(req.xhr);
+	if (is_ajax_request) {
+		var data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]'
+		res.end(data);
+		console.log('SENT DATA');
+	}
 });
 
 app.listen(3000);

@@ -6,9 +6,9 @@ html(lang="en")
     body
         div#map
         div
-        form(id="zipcode-form", action="/ajax/map", method="POST")
-            input(type='text', name='zipcode')
-            input(type='submit', value='search')
+            form(id="zipcode-form", action="/ajax/map", method="POST")
+                input(type='text', name='zipcode')
+                input(type='submit', value='search')
         script(type='text/javascript', src='http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js').
         script(type='text/javascript', src='http://code.jquery.com/jquery-1.10.0.min.js').
         script(type='text/javascript').
@@ -22,6 +22,15 @@ html(lang="en")
                     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     }).addTo(map);
+
+                    var popup = L.popup();
+                    function onMapClick(e) {
+                        popup
+                            .setLatLng(e.latlng)
+                            .setContent(e.latlng.toString())
+                            .openOn(map);
+                    }
+                    map.on('click', onMapClick);
 
                     $('#zipcode-form').submit(function(e) {
                         var postData = $(this).serialize();
@@ -46,15 +55,16 @@ html(lang="en")
                                 console.log(textStatus);
                                 console.log(jqXHR.status);
                             }
-                        });
+                        }); // ajax
                         e.preventDefault(); //STOP default action
+                    }); // zipcode submit
+
+                    $(window).resize(function(){
+                        var window_height = $(window).height();
+                        var canvas_height = window_height - (window_height/8);
+                        $('#map').height(canvas_height);
                     }); 
                 }); //doc ready
-                $(window).resize(function(){
-                    var window_height = $(window).height();
-                    var canvas_height = window_height - (window_height/8);
-                    $('#map').height(canvas_height);
-                });
             }); // anonymous func
 
 
