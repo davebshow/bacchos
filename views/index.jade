@@ -6,9 +6,9 @@ html(lang="en")
     body
         div#map
         div
-        form(id=send-form, action="", method="POST")
-            input#send-message
-            input(id='send-button', type='submit' value='Send')
+        form(id="zipcode-form", action="/ajax/map", method="POST")
+            input(type='text', name='zipcode')
+            input(type='submit', value='search')
         script(type='text/javascript', src='http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js').
         script(type='text/javascript', src='http://code.jquery.com/jquery-1.10.0.min.js').
         script(type='text/javascript').
@@ -23,25 +23,39 @@ html(lang="en")
                     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     }).addTo(map);
 
-                    $.getJSON('/ajax/map', function(data) {
-                        if (data.length>0) {
-                            for (var i=0; i<data.length; i++) {
-                                var marker = L.marker([data[i].lat, data[i].lng]).addTo(map);
-                                marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+                    $('#zipcode-form').submit(function(e) {
+                        var postData = $(this).serializeArray();
+                        var formURL = $(this).attr("action");
+                        console.log(postData);
+                        $.ajax({
+                            url: formURL,
+                            type: 'post',
+                            dataType: 'json',
+                            success: function(data, textStatus, jqXHR) {
+                                console.log('data');
+                                console.log(data);
+                                console.log('textStatus');
+                                console.log(textStatus);
+                                console.log('jqXHR');
+                                console.log(jqXHR);
+                                if (data.length>0) {
+                                    for (var i=0; i<data.length; i++) {
+                                        var marker = L.marker([data[i].lat, data[i].lng]).addTo(map);
+                                        marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+                                    }
+                                }
+                            },
+                            error: function(data, textStatus, jqXHR) {
+                                console.log(data);
+                                console.log(textStatus);
+                                console.log(jqXHR);
                             }
-                        }
-                    });
-                    
-                    var popup = L.popup();
-                    function onMapClick(e) {
-                        popup
-                            .setLatLng(e.latlng)
-                            .setContent(e.latlng.toString())
-                            .openOn(map);
-                    }
-                    map.on('click', onMapClick);
-                });
-            });
+                        });
+                        e.preventDefault(); //STOP default action
+                    }); 
+                    $('#zipdcode-form').submit();
+                }); //doc ready
+            }); // anonymous func
 
             $(function(){
                 $(window).resize(function(){

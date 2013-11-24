@@ -10,7 +10,7 @@ app.get('/', function(request, response){
 	response.render('index', {title : 'Home'});
 });
 
-app.get('/ajax/map', function(request, response) {
+app.post('/ajax/map', function(request, response) {
 	data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]'
 	response.end(data);
 	console.log('SENT DATA');
