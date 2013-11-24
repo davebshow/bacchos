@@ -38,11 +38,7 @@ var mapInit = function() {
             type: 'post',
             data: postData,
             dataType: 'json',
-
-            // addMarker
             success: addStoreMarkers,
-
-            // handleZipcodeError
             error: handleAjaxError
         }); // ajax
         e.preventDefault(); //STOP default action
