@@ -24,12 +24,13 @@ html(lang="en")
                     }).addTo(map);
 
                     $('#zipcode-form').submit(function(e) {
-                        var postData = $(this).serializeArray();
+                        var postData = $(this).serialize();
                         var formURL = $(this).attr("action");
                         console.log(postData);
                         $.ajax({
                             url: formURL,
                             type: 'post',
+                            data: postData,
                             dataType: 'json',
                             success: function(data, textStatus, jqXHR) {
                                 console.log('data');
@@ -37,7 +38,7 @@ html(lang="en")
                                 console.log('textStatus');
                                 console.log(textStatus);
                                 console.log('jqXHR');
-                                console.log(jqXHR);
+                                console.log(jqXHR.status);
                                 if (data.length>0) {
                                     for (var i=0; i<data.length; i++) {
                                         var marker = L.marker([data[i].lat, data[i].lng]).addTo(map);
@@ -53,7 +54,7 @@ html(lang="en")
                         });
                         e.preventDefault(); //STOP default action
                     }); 
-                    $('#zipdcode-form').submit();
+                    $('#zipcode-form').submit();
                 }); //doc ready
             }); // anonymous func
 
