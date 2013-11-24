@@ -10,10 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static(__dirname + '/static'));
 app.use(app.router);
-
-app.configure('development', function(){
-	app.use(express.errorHandler());
-});
+app.use(express.errorHandler());
 
 app.get('/', function(req, res){
 	res.render('index', {title : 'Bacchos'});
