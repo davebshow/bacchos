@@ -9,7 +9,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(app.router);
 
 app.get('/', function(req, res){
-	res.render('index', {title : 'Home'});
+	res.render('index', {title : 'Bacchos'});
 });
 
 app.post('/ajax/map', function(req, res) {
