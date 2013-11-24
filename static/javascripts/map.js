@@ -8,7 +8,6 @@ var mapInit = function() {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-                    // resizeMap
     $(window).resize(adjustMapSize); 
 
     popup = L.popup();
@@ -65,6 +64,6 @@ var mapInit = function() {
         console.log(jqXHR.status);
     }
 
-} // init
+}; // init
 
 
