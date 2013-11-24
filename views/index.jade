@@ -14,6 +14,7 @@ html(lang="en")
         script(type='text/javascript').
             $(function(){
                 $(document).ready(function() {
+                    // mapInit
                     var window_height = $(window).height();
                     var canvas_height = window_height - (window_height/8);
                     $('#map').height(canvas_height);
@@ -32,6 +33,7 @@ html(lang="en")
                     }
                     map.on('click', onMapClick);
 
+                    // processZipcodeQuery
                     $('#zipcode-form').submit(function(e) {
                         var postData = $(this).serialize();
                         var formURL = $(this).attr("action");
@@ -41,6 +43,8 @@ html(lang="en")
                             type: 'post',
                             data: postData,
                             dataType: 'json',
+
+                            // addMarker
                             success: function(data, textStatus, jqXHR) {
                                 console.log(textStatus);
                                 console.log(jqXHR.status);
@@ -51,6 +55,8 @@ html(lang="en")
                                     }
                                 }
                             },
+
+                            // handleZipcodeError
                             error: function(data, textStatus, jqXHR) {
                                 console.log(textStatus);
                                 console.log(jqXHR.status);
@@ -58,7 +64,8 @@ html(lang="en")
                         }); // ajax
                         e.preventDefault(); //STOP default action
                     }); // zipcode submit
-
+                    
+                    // resizeMap
                     $(window).resize(function(){
                         var window_height = $(window).height();
                         var canvas_height = window_height - (window_height/8);
