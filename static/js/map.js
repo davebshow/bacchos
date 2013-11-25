@@ -35,7 +35,7 @@ var mapInit = function() {
         console.log(postData);
         $.ajax({
             url: formURL,
-            type: 'post',
+            type: 'get',
             data: postData,
             dataType: 'json',
             success: addStoreMarkers,
@@ -55,11 +55,14 @@ var mapInit = function() {
         }
     }
 
+    // function addWineMarker
+
+    // addArcs hmmm don't know how exactly leaflet API
+
+
     function handleAjaxError(data, textStatus, jqXHR) {
         console.log(textStatus);
         console.log(jqXHR.status);
     }
 
 }; // init
-
-

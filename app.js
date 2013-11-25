@@ -1,3 +1,4 @@
+var middleware = require('./lib/middleware');
 var express = require('express');
 var app = express();
 
@@ -6,26 +7,21 @@ app.set('view engine', 'jade');
 
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.static(__dirname + '/static'));
+app.use(middleware.protectAjax);
 app.use(app.router);
-app.use(express.errorHandler());
+app.use(express.static(__dirname + '/static'));
+app.use(express.errorHandler({thowStack: true, dumpExceptions: true}));
+app.use(middleware.pageNotFound);
 
 app.get('/', function(req, res){
-	res.render('index', {title : 'Bacchos'});
+    res.render('index', {title : 'Bacchos'});
 });
 
-app.post('/ajax/map', function(req, res) {
-	console.log(req.body);
-	var is_ajax_request = req.xhr;
-	console.log(req.xhr);
-	if (is_ajax_request) {
-		var data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]';
-		res.end(data);
-	} else {
-		res.end(403, 'forbidden')
-	}
+app.get('/ajax/map', function(req, res) {
+    console.log(req.query);
+    var data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]';
+    res.writeHead(200, {'Content-Type': 'application/json'});   
+    res.end(data);
 });
 
 app.listen(3000);
