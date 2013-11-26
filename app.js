@@ -20,8 +20,10 @@ app.get('/', function(req, res){
 app.get('/ajax/map', function(req, res) {
     console.log(req.query);
     var data = '[{"lat": 41, "lng": -81}, {"lat":44, "lng": -122}]';
-    res.writeHead(200, {'Content-Type': 'application/json'});   
-    res.end(data);
+    res.writeHead(200, {'Content-Type': 'application/json'}); 
+    data.pipe(res);
+
+    //res.end(data);
 });
 
 app.listen(3000);
