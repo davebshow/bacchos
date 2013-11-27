@@ -11,6 +11,6 @@ exports.storeQuery = function(country, zipcode, callback) {
 	function(err, response, body) {
 		console.log(err);
 		// need custom error handler here
-		callback(err, response, body);
+		callback(body);
 	});
-}
+} //

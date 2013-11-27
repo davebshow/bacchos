@@ -14,8 +14,8 @@ module.exports = function(io) {
 	    var zipcode = req.query['zipcode'];
 	    console.log(country);
 	    console.log(zipcode);
-	    snoothClient.storeQuery(country, zipcode, function(err, response, body) {
-	    	console.log(body);
+	    snoothClient.storeQuery(country, zipcode, function(data) {
+	    	console.log(data);
 	    	console.log('callback');
 	    });
 	};
