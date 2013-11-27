@@ -6,17 +6,20 @@ html(lang="en")
     body
         div#map
         div
-            form(id="zipcode-form", action="/ajax/map", method="GET")
-                input(type='text', name='zipcode')
-                input(type='submit', value='search')
-        script(type='text/javascript', src='http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js').
-        script(type='text/javascript', src='http://code.jquery.com/jquery-1.10.0.min.js').
-        script(type='text/javascript', src='/js/map.js').
-        script(type='text/javascript').
+            form(id="zipcode-form", action="/ajax/zipcode", method="GET")
+                select(name="country")
+                    option US
+                    option CA
+                    option ES
+                input(type="text", name="zipcode", placeholder="zipcode")
+                input(type="submit", value="search")
+        script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
+        script(type="text/javascript", src="http://code.jquery.com/jquery-1.10.0.min.js").
+        script(type="text/javascript", src="/js/map.js").
+        script(type="text/javascript").
             $(function(){
                 $(document).ready(function() {
                     mapInit();
                 });
             });
-
 
