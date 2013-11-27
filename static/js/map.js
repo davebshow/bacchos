@@ -3,7 +3,10 @@ var mapInit = function() {
     var canvas_height = window_height - (window_height/8);
     $('#map').height(canvas_height);
 
-    var map = L.map('map').setView([42, -88], 5);
+    //geolocation not working
+    var initLat = 44;
+    var initLng = -90;
+    var map = L.map('map').setView([initLat, initLng], 6);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -16,12 +19,14 @@ var mapInit = function() {
 
     $('#zipcode-form').submit(zipcodeQuery);
 
+
     function adjustMapSize() {
         var window_height = $(window).height();
         var canvas_height = window_height - (window_height/8);
         $('#map').height(canvas_height);
     }
 
+    // ok back to working code
     function onMapClick(e) {
         popup
             .setLatLng(e.latlng)
@@ -48,6 +53,8 @@ var mapInit = function() {
         console.log(textStatus);
         console.log(jqXHR.status);
         if (data.length>0) {
+            var latArray = [];
+            var lngArray = []
             for (var i=0; i<data.length; i++) {
 
                 var name = data[i].name;
@@ -61,6 +68,8 @@ var mapInit = function() {
                     console.log('coord');
                     var lat = data[i].lat;
                     var lng = data[i].lng;
+                    latArray.push(lat);
+                    lngArray.push(lng);
                 } else {
                     console.log(loc);
                 }
@@ -74,6 +83,14 @@ var mapInit = function() {
                 }  
                 marker.bindPopup(popupHTML);
             }
+            var latSum = latArray.reduce(function(a, b) {return parseInt(a) + parseInt(b)});
+            var avgLat = latSum/latArray.length;
+
+            var lngSum = lngArray.reduce(function(a, b) {return parseInt(a) + parseInt(b)});
+            var avgLng = lngSum/lngArray.length;
+            console.log(avgLat);
+            console.log(avgLng);
+            map.panTo(new L.LatLng(avgLat, avgLng));
         }
     }
 
