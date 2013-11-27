@@ -18,7 +18,7 @@ module.exports = function(io) {
         // make request to Snooth using the client module
         snoothClient.storeQuery(country, zipcode, function(data) {
             console.log(data);
-            console.log('callback');
+            res.json(data);
         });
     };
     return routes;

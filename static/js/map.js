@@ -49,8 +49,30 @@ var mapInit = function() {
         console.log(jqXHR.status);
         if (data.length>0) {
             for (var i=0; i<data.length; i++) {
-                var marker = L.marker([data[i].lat, data[i].lng]).addTo(map);
-                marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+
+                var name = data[i].name;
+                var address = data[i].address;
+                var city = data[i].city;
+                var state = data[i].state;
+                var country = data[i].country;
+                var loc = address + ', ' + city + ', ' + state + ', ' + country;
+
+                if (data[i].lat && data[i].lng) {
+                    console.log('coord');
+                    var lat = data[i].lat;
+                    var lng = data[i].lng;
+                } else {
+                    console.log(loc);
+                }
+
+                var marker = L.marker([lat, lng]).addTo(map);
+
+                if (data[i].url) {
+                    var popupHTML = "<b><a href=" + data[i].url + ">" + name +"</a></b><br>" + loc;
+                } else {
+                var popupHTML = "<b>" + name + "</b><br>" + loc;
+                }  
+                marker.bindPopup(popupHTML);
             }
         }
     }
