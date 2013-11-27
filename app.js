@@ -1,7 +1,8 @@
 // dependency
 var express = require('express');
 
-// create app and bind to server
+// create app and webserver
+// add app as request handler
 var app = express();
 var server = require('http').createServer(app);
 
@@ -12,7 +13,7 @@ var io = require('socket.io').listen(server);
 var errors = require('./middleware/errors');
 var routes = require('./controllers/routes')(io);
 
-// serve views
+// view settings
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
@@ -28,6 +29,6 @@ app.use(errors.pageNotFound);
 app.get('/', routes.index);
 app.get('/ajax/zipcode', errors.protectAjax, routes.storeQueryHandler);
 
-// http server bound to port 3000
+// http server bind and listen to port 3000
 server.listen(3000);
 console.log('Listening on port 3000');
