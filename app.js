@@ -16,7 +16,7 @@ var routes = require('./controllers/routes')(io);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
-// set up middlewar
+// set up middleware
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(app.router);
@@ -26,9 +26,4 @@ app.use(errors.pageNotFound);
 
 // routes
 app.get('/', routes.index);
-
 app.get('/ajax/zipcode', errors.protectAjax, routes.storeQueryHandler);
-
-// http server bound to port 3000
-server.listen(3000);
-console.log('Listening on port 3000');
