@@ -3,11 +3,14 @@ var express = require('express');
 
 // create app and bind to server
 var app = express();
-var server = require('http').createServer(app)
+var server = require('http').createServer(app);
+
+// piggyback socket on http server
+var io = require('socket.io').listen(server);
 
 // local dependencies
 var errors = require('./middleware/errors');
-var routes = require('./controllers/routes');
+var routes = require('./controllers/routes')(io);
 
 // serve views
 app.set('views', __dirname + '/views');
@@ -29,7 +32,3 @@ app.get('/ajax/zipcode', errors.protectAjax, routes.storeQueryHandler);
 // http server bound to port 3000
 server.listen(3000);
 console.log('Listening on port 3000');
-
-// socket.io server for handling blocking API calls
-var restClientServer = require('./controllers/restClientServer');
-restClientServer.listen(server);
