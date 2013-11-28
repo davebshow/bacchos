@@ -16,7 +16,7 @@ var mapInit = function(callback) {
             initLng = 90;
             callback(initLat, initLng);
         }, 
-        {maximumAge: 1}); // getCurrentPosition
+        {maximumAge: 1});
     } else {
         initLat = 44;
         initLng = 90;
@@ -29,7 +29,7 @@ wineMap = function(initLat, initLng) {
     var window_height = $(window).height();
     var canvas_height = window_height - (window_height/8);
     $('#map').height(canvas_height);
-    var map = L.map('map').setView([initLat, initLng], 6);
+    var map = L.map('map').setView([initLat, initLng], 4);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
@@ -100,7 +100,7 @@ wineMap = function(initLat, initLng) {
                 if (data[i].url) {
                     var popupHTML = "<b><a href=" + data[i].url + ">" + name +"</a></b><br>" + loc;
                 } else {
-                var popupHTML = "<b>" + name + "</b><br>" + loc;
+                    var popupHTML = "<b>" + name + "</b><br>" + loc;
                 }  
                 marker.bindPopup(popupHTML);
             }
@@ -109,16 +109,15 @@ wineMap = function(initLat, initLng) {
 
             var lngSum = lngArray.reduce(function(a, b) {return parseInt(a) + parseInt(b)});
             var avgLng = lngSum/lngArray.length;
-            console.log(avgLat);
-            console.log(avgLng);
-            map.panTo(new L.LatLng(avgLat, avgLng));
+            console.log('New Center:', avgLat, avgLng);
+            var pan = map.panTo(new L.LatLng(avgLat, avgLng));
+            pan.setZoom(8);
         }
     }
 
     // function addWineMarker
 
     // addArcs hmmm don't know how exactly leaflet API
-
 
     function handleAjaxError(data, textStatus, jqXHR) {
         console.log(textStatus);
