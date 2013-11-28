@@ -1,6 +1,6 @@
 var mapInit = function(callback) {
-    var initLat;
-    var initLng;
+    var initLat = 44;
+    var initLng = 90;
     if (navigator.geolocation) {
         console.log('gotGeo')
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -12,14 +12,14 @@ var mapInit = function(callback) {
         },
         function(err) {
             console.log(err);
-            initLat = 44;
-            initLng = 90;
+            //initLat = 44;
+            //initLng = 90;
             callback(initLat, initLng);
         }, 
         {maximumAge: 1});
     } else {
-        initLat = 44;
-        initLng = 90;
+        //initLat = 44;
+        //initLng = 90;
         callback(initLat, initLng);            
     }
 }
@@ -36,7 +36,7 @@ wineMap = function(initLat, initLng) {
 
     $(window).resize(adjustMapSize); 
 
-    popup = L.popup();
+    var popup = L.popup();
 
     map.on('click', onMapClick);
 
@@ -56,19 +56,26 @@ wineMap = function(initLat, initLng) {
     }
 
     function zipcodeQuery(e) {
-        var postData = $(this).serialize();
+        var getData = $(this).serialize();
         var formURL = $(this).attr("action");
-        console.log(postData);
         $.ajax({
             url: formURL,
             type: 'get',
-            data: postData,
+            data: getData,
             dataType: 'json',
             success: addStoreMarkers,
             error: handleAjaxError
         }); // ajax
         e.preventDefault(); //STOP default action
     } // zipcode submit
+
+    function storeWines(e) {
+        $.ajax({
+            url: 
+
+        });
+
+    }
 
     function addStoreMarkers(data, textStatus, jqXHR) {
         console.log(textStatus);
@@ -77,18 +84,18 @@ wineMap = function(initLat, initLng) {
             var latArray = [];
             var lngArray = []
             for (var i=0; i<data.length; i++) {
-
+                var store = data[i];
                 var name = data[i].name;
-                var address = data[i].address;
-                var city = data[i].city;
-                var state = data[i].state;
-                var country = data[i].country;
+                var address = store.address;
+                var city = store.city;
+                var state = store.state;
+                var country = store.country;
                 var loc = address + ', ' + city + ', ' + state + ', ' + country;
 
-                if (data[i].lat && data[i].lng) {
+                if (store.lat && store.lng) {
                     console.log('coord');
-                    var lat = data[i].lat;
-                    var lng = data[i].lng;
+                    var lat = store.lat;
+                    var lng = store.lng;
                     latArray.push(lat);
                     lngArray.push(lng);
                 } else {
@@ -97,23 +104,31 @@ wineMap = function(initLat, initLng) {
 
                 var marker = L.marker([lat, lng]).addTo(map);
 
-                if (data[i].url) {
-                    var popupHTML = "<b><a href=" + data[i].url + ">" + name +"</a></b><br>" + loc;
+                if (store.url) {
+                    var popupHTML = "<b><a href=" + store.url + ">" + name +"</a></b><br>" + loc;
                 } else {
                     var popupHTML = "<b>" + name + "</b><br>" + loc;
                 }  
+
                 marker.bindPopup(popupHTML);
+                pop = marker._popup
+                if (store.num_wines>0) {
+                    var newContent = popupHTML + "<br>" + "<a href='/ajax/store/' data-store=store.id id='store-wines'>wines</a>";
+                    pop.setContent(newContent);
+                }
             }
-            var latSum = latArray.reduce(function(a, b) {return parseInt(a) + parseInt(b)});
+            var latSum = latArray.reduce(function(a, b) {return parseFloat(a) + parseFloat(b)});
             var avgLat = latSum/latArray.length;
 
-            var lngSum = lngArray.reduce(function(a, b) {return parseInt(a) + parseInt(b)});
+            var lngSum = lngArray.reduce(function(a, b) {return parseFloat(a) + parseFloat(b)});
             var avgLng = lngSum/lngArray.length;
             console.log('New Center:', avgLat, avgLng);
-            var pan = map.panTo(new L.LatLng(avgLat, avgLng));
-            pan.setZoom(8);
+            map.panTo(new L.LatLng(avgLat, avgLng)).setZoom(10);
+    console.log(latArray);
+    console.log(lngArray);
         }
     }
+
 
     // function addWineMarker
 
