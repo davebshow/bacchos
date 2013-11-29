@@ -69,14 +69,6 @@ wineMap = function(initLat, initLng) {
         e.preventDefault(); //STOP default action
     } // zipcode submit
 
-    function storeWines(e) {
-        $.ajax({
-            url: 
-
-        });
-
-    }
-
     function addStoreMarkers(data, textStatus, jqXHR) {
         console.log(textStatus);
         console.log(jqXHR.status);
@@ -124,8 +116,7 @@ wineMap = function(initLat, initLng) {
             var avgLng = lngSum/lngArray.length;
             console.log('New Center:', avgLat, avgLng);
             map.panTo(new L.LatLng(avgLat, avgLng)).setZoom(10);
-    console.log(latArray);
-    console.log(lngArray);
+
         }
     }
 
