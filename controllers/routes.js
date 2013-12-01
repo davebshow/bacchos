@@ -1,28 +1,17 @@
-
-
-
 var snoothClient = require('./clients/snooth_client')
 var request = require('request')
 
 // app routes
-module.exports = function(io) {
+exports.index = function(req, res) {
+    res.render('index', {title : 'Bacchos'});
+}
 
-    var routes = {};
-
-    routes.index = function(req, res) {
-        res.render('index', {title : 'Bacchos'});
-    };
-
-    // find stores by zipcode  
-    routes.storeQueryHandler = function(req, res) {
-        var country = req.query['country'];
-        var zipcode = req.query['zipcode'];
-
-        // make request to Snooth using the client module
-        snoothClient.storeQuery(country, zipcode, function(data) {
-            console.log(data);
-            res.json(data);
-        });
-    };
-    return routes;
-};
+// find stores by zipcode  
+exports.storeQueryHandler = function(req, res) {
+    var country = req.query['country'];
+    var zipcode = req.query['zipcode'];
+    // make request to Snooth using the client module
+    snoothClient.storeQuery(country, zipcode, function(data) {
+        res.json(data);
+    });
+}

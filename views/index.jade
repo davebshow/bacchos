@@ -11,15 +11,27 @@ html(lang="en")
                     option US
                     option CA
                     option ES
+                input(type="hidden" name="_csrf" value="token")
                 input(type="text", name="zipcode", placeholder="zipcode")
                 input(type="submit", value="search")
         script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
-        script(src="http://olegsmith.github.com/leaflet.geocoding/leaflet.geocoding.js").
         script(type="text/javascript", src="http://code.jquery.com/jquery-1.10.0.min.js").
         script(type="text/javascript", src="/js/map.js").
+        script(type="text/javascript" src="/socket.io/socket.io.js").
         script(type="text/javascript").
             $(function(){
                 $(document).ready(function() {
+                    // From github http://stackoverflow.com/questions/11200068/how-to-implement-csrf-protection-in-ajax-calls-using-express-js-looking-for-com
+                    //var CSRF_HEADER = 'X-CSRF-Token';
+                    //var setCSRFToken = function(securityToken) {
+                    //    $.ajaxPrefilter(function(options, _, xhr) {
+                    //        if (!xhr.crossDomain) {
+                    //            console.log('set header')
+                    //            xhr.setRequestHeader(CSRF_HEADER, securityToken);
+                    //        }
+                    //    });
+                    //}
+                    //setCSRFToken($('meta[name="csrf-token"]').attr('content'));
                     mapInit(wineMap);
                 });
             });
