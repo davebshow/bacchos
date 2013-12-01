@@ -35,13 +35,13 @@ console.log('Listening on port 3000');
 
 // web sockets
 io.sockets.on('connection', function(socket) {
-	console.log('Socket connection established');
+    console.log('Socket connection established');
 
-	socket.on('storeData', function(data) {
-		console.log('got store data');
-	});
+    socket.on('storeData', function(data) {
+        console.log('got store data');
+    });
 
-	socket.on('storeId', function(data) {
-		console.log('got store id')
-	});
+    socket.on('storeId', function(data) {
+        console.log('got store id')
+    });
 });
