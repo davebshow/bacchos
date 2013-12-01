@@ -20,20 +20,6 @@ app.set('view engine', 'jade');
 // middleware
 app.use(express.favicon());
 app.use(express.logger('dev'));
-
-// generate csrf tokens
-app.use(express.cookieParser());
-app.use(express.session({ 
-	secret: 'keyboard cat', 
-	key: 'sid',
-	cookie: { secure: true }
-}));
-app.use(express.csrf());
-app.use(function(req, res, next){
-    res.locals.token = req.csrfToken;
-    next();
-});
-
 app.use(app.router);
 app.use(express.static(__dirname + '/static'));
 app.use(express.errorHandler({thowStack: true, dumpExceptions: true}));
