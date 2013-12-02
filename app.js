@@ -11,7 +11,7 @@ var io = require('socket.io').listen(server);
 
 // local dependencies
 var errors = require('./middleware/errors');
-var routes = require('./controllers/routes')(io);
+var routes = require('./controllers/routes');
 
 // view settings
 app.set('views', __dirname + '/views');
@@ -32,3 +32,16 @@ app.get('/ajax/zipcode', errors.protectAjax, routes.storeQueryHandler);
 // http server bind and listen to port 3000
 server.listen(3000);
 console.log('Listening on port 3000');
+
+// web sockets
+io.sockets.on('connection', function(socket) {
+    console.log('Socket connection established');
+
+    socket.on('storeData', function(data) {
+        console.log('got store data');
+    });
+
+    socket.on('storeId', function(data) {
+        console.log('got store id')
+    });
+});
