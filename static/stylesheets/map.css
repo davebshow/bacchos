@@ -15,7 +15,19 @@
     width: 100%;
 }
 
-#wines-wrapper {
-	position: absolute;
-	
+#wine-wrapper {
+	position: relative;
+		
 }
+
+#wine-box {
+	position: absolute;
+	bottom: 0;
+	overflow: scroll;
+	text-align: center;
+	width: 25%;
+	height: 300px;	
+	background-color: white;
+	bottom: 0;
+}
+

@@ -23,12 +23,12 @@ exports.storeQuery = function(country, zipcode, callback) {
     );
 }
 
-exports.winesByStore = function(store_id, callback) {
+exports.winesByStore = function(storeId, callback) {
     var apiKey = 'hz2k7lvd6cu0lzidolxp6csbt6hjf86ru57cbyqphzm019m9';
     request({
         uri: 'http://api.snooth.com/wines',
         method: 'GET',
-        qs: {'akey': apiKey, 'm': store_id}
+        qs: {'akey': apiKey, 'm': storeId}
         }, 
         function(err, response, body) {
             if (!err && response.statusCode == 200) {
@@ -36,6 +36,32 @@ exports.winesByStore = function(store_id, callback) {
                 var data = jsonObj.wines;
                 console.log(jsonObj.meta);
                 callback(data);
+            } else {
+                console.log(err);
+                // need custom error handler here
+            }   
+        }
+    );
+
+}
+
+exports.wineryDetail = function(wineryId, callback) {
+    var apiKey = 'hz2k7lvd6cu0lzidolxp6csbt6hjf86ru57cbyqphzm019m9';
+    request({
+        uri: 'http://api.snooth.com/winery',
+        method: 'GET',
+        qs: {'akey': apiKey, 'id': wineryId, 'format': 'json'}
+        }, 
+        function(err, response, body) {
+            if (!err && response.statusCode == 200) {
+                //console.log(body);
+                try {
+                    var jsonObj = JSON.parse(body);
+                    var data = jsonObj.winery;
+                    callback(data);
+                } catch(e) {
+                    callback(false);
+                }
             } else {
                 console.log(err);
                 // need custom error handler here

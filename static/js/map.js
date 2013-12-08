@@ -32,6 +32,21 @@ wineMap = function(initLat, initLng) {
         console.log('Socket connection established');
     });
 
+    socket.on('wines', function(wines) {
+        console.log('got wines');
+            var newDiv = '<div id="wine-box">';
+            for (var i=0; i<wines.length; i++) {
+                var wine = wines[i]; 
+                var name = wine.name;
+                var newDiv = newDiv + name + '<br>'
+        
+            }
+            newDiv = newDiv + '</div>';
+        console.log(newDiv);
+        $('#map-wrapper').append(newDiv);
+
+    });
+
     $(window).resize(adjustMapSize); 
 
     var popup = L.popup();
