@@ -2,7 +2,6 @@ var mapInit = function(callback) {
     var initLat = 44;
     var initLng = 90;
     if (navigator.geolocation) {
-        //console.log('gotGeo')
         navigator.geolocation.getCurrentPosition(function(position) {
             initLat = position.coords.latitude;
             initLng = position.coords.longitude;
@@ -10,14 +9,10 @@ var mapInit = function(callback) {
         },
         function(err) {
             console.log(err);
-            //initLat = 44;
-            //initLng = 90;
             callback(initLat, initLng);
         }, 
         {maximumAge: 1});
     } else {
-        //initLat = 44;
-        //initLng = 90;
         callback(initLat, initLng);            
     }
 }
@@ -25,8 +20,8 @@ var mapInit = function(callback) {
 
 wineMap = function(initLat, initLng) {
     var window_height = $(window).height();
-    var canvas_height = window_height - (window_height/8);
-    $('#map').height(canvas_height);
+    var canvas_height = window_height - 20;
+    $('.dynamic-map').height(canvas_height);
     var map = L.map('map').setView([initLat, initLng], 8);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -35,7 +30,7 @@ wineMap = function(initLat, initLng) {
     var socket = io.connect('http://localhost', {secure: false});
     socket.on('connect', function() {
         console.log('Socket connection established');
-    })
+    });
 
     $(window).resize(adjustMapSize); 
 
@@ -49,8 +44,8 @@ wineMap = function(initLat, initLng) {
 
     function adjustMapSize() {
         var window_height = $(window).height();
-        var canvas_height = window_height - (window_height/8);
-        $('#map').height(canvas_height);
+        var canvas_height = window_height - (window_height/20);
+        $('.dynamic-map').height(canvas_height);
     }
 
     function onMapClick(e) {
@@ -61,12 +56,12 @@ wineMap = function(initLat, initLng) {
     }
 
     function zipcodeQuery(e) {
-        var getData = $(this).serialize();
+        var zipcode = $(this).serialize();
         var formURL = $(this).attr("action");
         $.ajax({
             url: formURL,
             type: 'get',
-            data: getData,
+            data: zipcode,
             dataType: 'json',
             success: addStoreMarkers,
             error: handleAjaxError
@@ -75,21 +70,25 @@ wineMap = function(initLat, initLng) {
     } // zipcode submit
 
     function storeQuery() {
+        var zipcode = $(this).data('zipcode');
         var storeId = $(this).data('storeid');
-        socket.emit('storeId', storeId);
+        console.log(zipcode, storeId);
+        socket.emit('storeId', {zip: zipcode, store: storeId});
     }
 
+
     function addStoreMarkers(data, textStatus, jqXHR) {
-        //console.log(textStatus);
-        //console.log(jqXHR.status);
         socket.emit('storeData', data);
-        if (data.length>0) {
+        var zipcode = data[0];   
+        var storeData = data[1];
+        console.log('adding markers')
+        if (storeData.length>0) {
             var latArray = [];
             var lngArray = [];
-            for (var i=0; i<data.length; i++) {
-                var store = data[i];
-                var storeId = data[i].id;
-                var name = data[i].name;
+            for (var i=0; i<storeData.length; i++) {
+                var store = storeData[i];
+                var storeId = store.id;
+                var name = store.name;
                 var address = store.address;
                 var city = store.city;
                 var state = store.state;
@@ -106,22 +105,31 @@ wineMap = function(initLat, initLng) {
                     //console.log(loc);
                 }
 
-                var marker = L.marker([lat, lng]).addTo(map);
-                // this is gonna need a bunch of ifs to avoid empty
-                if (store.url) {
-                    var popupHTML = "<b><a href=" + store.url + ">" + name +"</a></b><br>" + loc;
-                } else {
-                    var popupHTML = "<b>" + name + "</b><br>" + loc;
-                }  
+                // NEED TO CLEAN UP HERE TO REDUCE REPITION
 
-                marker.bindPopup(popupHTML);
-                var pop = marker._popup
-                if (store.num_wines>0) {
-                    var storeForm = "<input class='store-button' type='button' value='wines' data-storeid=" + storeId.toString() + " ></input>"
-                    var newContent = popupHTML + "<br>" + storeForm;
-                    pop.setContent(newContent);
-                }
-            }
+                if (store.num_wines>0) { // THIS IF JUST FOR TESTING
+                    var marker = L.marker([lat, lng]).addTo(map);
+                    // this is gonna need a bunch of ifs to avoid empty
+                    if (store.url) {
+                        var popupHTML = "<b><a href=" + store.url + ">" + name +"</a></b><br>" + loc;
+                    } else {
+                        var popupHTML = "<b>" + name + "</b><br>" + loc;
+                    }  
+                
+
+                    marker.bindPopup(popupHTML);
+                    var pop = marker._popup
+                    if (store.num_wines>0) {
+                        var storeForm = "<input class='store-button' type='button' value='wines' data-storeid=" + storeId.toString() + " data-zipcode=" + zipcode + " ></input>"
+                        console.log(storeForm);
+                        var newContent = popupHTML + "<br>" + storeForm;
+                        pop.setContent(newContent);
+                        marker.setOpacity('10');
+                    } else {
+                        marker.setOpacity('1');
+                    }
+                }//TESTING IF
+            } 
             var latSum = latArray.reduce(function(a, b) {return parseFloat(a) + parseFloat(b)});
             var avgLat = latSum/latArray.length;
 
@@ -131,12 +139,6 @@ wineMap = function(initLat, initLng) {
             map.panTo(new L.LatLng(avgLat, avgLng)).setZoom(10);
         }
     }
-
-    //function emitStoreData(data) {
-    //    socket.emit('storeData', data, function(data) {
-    //        console.log(data)
-    //    });
-    //}
 
     // function addWineMarker
 

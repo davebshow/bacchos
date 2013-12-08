@@ -3,16 +3,19 @@ html(lang="en")
     head
         title=title
         link(rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css")
+        link(rel="stylesheet" href="stylesheets/map.css")
     body
-        div#map
-        div
-            form(id="zipcode-form", action="/ajax/zipcode", method="GET")
-                select(name="country")
-                    option US
-                    option CA
-                    option ES
-                input(type="text", name="zipcode", placeholder="zipcode")
-                input(type="submit", value="search")
+        div(style="height:100%")
+            div(id="map-wrapper" class="dynamic-map")
+                div(id="map" class="dynamic-map")
+                div#form-wrapper
+                    form(id="zipcode-form", action="/ajax/zipcode", method="GET")
+                        select(name="country")
+                            option US
+                            option CA
+                            option ES
+                        input(type="text", name="zipcode", placeholder="zipcode")
+                        input(type="submit", value="search")
         script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
         script(type="text/javascript", src="http://code.jquery.com/jquery-1.10.0.min.js").
         script(type="text/javascript", src="/js/map.js").
