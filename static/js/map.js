@@ -21,7 +21,7 @@ var mapInit = function(callback) {
 wineMap = function(initLat, initLng) {
     var window_height = $(window).height();
     var canvas_height = window_height - 20;
-    $('.dynamic-map').height(canvas_height);
+    $('#container').height(canvas_height);
     var map = L.map('map').setView([initLat, initLng], 8);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -33,18 +33,30 @@ wineMap = function(initLat, initLng) {
     });
 
     socket.on('wines', function(wines) {
-        console.log('got wines');
-            var newDiv = '<div id="wine-box">';
+        console.log(wines);
+
+        // handle strange errors
+        if (wines == 'No wines located for this store') {
+            var newContent = '<div class="info-column-content">' + wines;
+        } else {
+            var newContent = '<div id="wine-box" class="info-column-content">'
             for (var i=0; i<wines.length; i++) {
                 var wine = wines[i]; 
                 var name = wine.name;
-                var newDiv = newDiv + name + '<br>'
-        
+                console.log(name);
+                var newContent = newContent + name + '<br>'
+                console.log(newContent)
             }
-            newDiv = newDiv + '</div>';
-        console.log(newDiv);
-        $('#map-wrapper').append(newDiv);
-
+        }
+        newContent = newContent + '</div>'
+        //console.log(newContent)
+        //console.log(document.getElementById('wine-box'))
+        if (!document.getElementById('wine-box')) {
+            $('#info-column').append(newContent);
+        } else {
+            console.log('replace')
+            $('#wine-box').replaceWith(newContent);
+        }
     });
 
     $(window).resize(adjustMapSize); 
@@ -60,7 +72,8 @@ wineMap = function(initLat, initLng) {
     function adjustMapSize() {
         var window_height = $(window).height();
         var canvas_height = window_height - (window_height/20);
-        $('.dynamic-map').height(canvas_height);
+        $('#container').height(canvas_height);
+
     }
 
     function onMapClick(e) {
@@ -136,7 +149,6 @@ wineMap = function(initLat, initLng) {
                     var pop = marker._popup
                     if (store.num_wines>0) {
                         var storeForm = "<input class='store-button' type='button' value='wines' data-storeid=" + storeId.toString() + " data-zipcode=" + zipcode + " ></input>"
-                        console.log(storeForm);
                         var newContent = popupHTML + "<br>" + storeForm;
                         pop.setContent(newContent);
                         marker.setOpacity('10');

@@ -75,26 +75,36 @@ io.sockets.on('connection', function(socket) {
 
         // here will check socket storage call api if necessary
         var wines = zipcodesStoresWines[zipcode][storeId];
-        //console.log(wines);
-        socket.emit('wines', wines);
+        if (!wines) {
+            snoothClient.winesByStore(storeId, function(data) {
+                wines = data;
+            });
+        }
+        
         // need to handle error
-        async.map(wines, wineryCall, function(err, results) {
-            //console.log(results)
-            for (var i=0; i<results.length; i++) {
-                var  wineryData = results[i];
-                //console.log(wineryData);
-                var wine = wineryData[0];
-                var winery = wineryData[1];
-                console.log(winery);
-                if (winery) {
-                    if (winery.lat && winery.lng) {
-                        winesWineries[wine] = winery;
-                    } else {
-                        console.log('Geocoding necessary')
+
+        if (wines) {
+            socket.emit('wines', wines);
+            async.map(wines, wineryCall, function(err, results) {
+                //console.log(results)
+                for (var i=0; i<results.length; i++) {
+                    var  wineryData = results[i];
+                    //console.log(wineryData);
+                    var wine = wineryData[0];
+                    var winery = wineryData[1];
+                    console.log(winery);
+                    if (winery) {
+                        if (winery.lat && winery.lng) {
+                            winesWineries[wine] = winery;
+                        } else {
+                            console.log('Geocoding necessary')
+                        }
                     }
                 }
-            }
-        });
+            });
+        } else {
+            socket.emit('wines', 'No wines located for this store');
+        }
         //console.log(winesWineries)
         
     });
@@ -123,10 +133,9 @@ io.sockets.on('connection', function(socket) {
         snoothClient.wineryDetail(wineryId, function(data) {
 
             if (data) {
-            data.description = 'safe';
-            var responseArray = [];
-            responseArray[0] = wineId;
-            responseArray[1] = data;
+                var responseArray = [];
+                responseArray[0] = wineId;
+                responseArray[1] = data;
             //console.log(responseArray);
             return doneCallback(null, responseArray);
             } else {
