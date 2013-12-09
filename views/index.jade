@@ -20,7 +20,6 @@ html(lang="en")
                         input(type="submit", value="search")
             div(id="map-wrapper")
                 div(id="map")
-
         script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
         script(type="text/javascript", src="http://code.jquery.com/jquery-1.10.0.min.js").
         script(type="text/javascript", src="/js/map.js").
@@ -28,7 +27,7 @@ html(lang="en")
         script(type="text/javascript").
             $(function(){
                 $(document).ready(function() {
-                    mapInit(wineMap);
+                    mapInit();
                 });
             });
 
