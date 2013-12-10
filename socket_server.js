@@ -109,7 +109,7 @@ exports.listen = function(server) {
                 }
 
             });
-        };
+        };  
 
     }); // socket.on
 } // anonymous

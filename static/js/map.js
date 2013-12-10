@@ -44,6 +44,10 @@ wineMap = function(initLat, initLng) {
 
     $(document).on('click', '.store-button', storeQuery);
 
+    $(document).on('click', '.wine-button', function() {
+        console.log($(this).data('wineryid'));
+    });
+
     function displayWines(wines) {
         // handle strange errors
         if (wines == 'No wines located for this store') {
@@ -53,9 +57,14 @@ wineMap = function(initLat, initLng) {
             for (var i=0; i<wines.length; i++) {
                 var wine = wines[i]; 
                 var name = wine.name;
-                console.log(name);
-                var newContent = newContent + name + '<br>'
-                console.log(newContent)
+                var vintage = wine.vintage;
+                var varietal = wine.varietal;
+                var winery = wine.winery;
+                var wineryId = wine.winery_id;
+                var wineDetails = name + '<br>' + vintage + ' ' + varietal; 
+                var wineryDetails = ' - '+ '<input type="button" class="wine-button" data-wineryid=' + wineryId + ' value=' + winery + ' /><br><br>';
+                var newContent = newContent + wineDetails + wineryDetails;
+                console.log(wineryDetails)
             }
         }
         newContent = newContent + '</div>'
@@ -98,16 +107,19 @@ wineMap = function(initLat, initLng) {
     function storeQuery() {
         var zipcode = $(this).data('zipcode');
         var storeId = $(this).data('storeid');
-        console.log(zipcode, storeId);
         socket.emit('storeId', {zip: zipcode, store: storeId});
     };
+
+    function wineryQuery(e) {
+        console.log('click');
+    }
 
 
     function addStoreMarkers(data, textStatus, jqXHR) {
         socket.emit('storeData', data);
         var zipcode = data[0];   
         var storeData = data[1];
-        console.log('adding markers')
+        //console.log('adding markers');
         if (storeData.length>0) {
             var latArray = [];
             var lngArray = [];
