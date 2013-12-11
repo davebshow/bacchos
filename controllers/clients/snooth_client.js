@@ -13,6 +13,7 @@ exports.storeQuery = function(country, zipcode, callback) {
         function(err, response, body) {
             if (!err && response.statusCode == 200) {
                 var jsonObj = JSON.parse(body);
+                console.log(jsonObj.meta);
                 var data = jsonObj.stores;
                 callback(data);
             } else {
@@ -28,13 +29,13 @@ exports.winesByStore = function(storeId, callback) {
     request({
         uri: 'http://api.snooth.com/wines',
         method: 'GET',
-        qs: {'akey': apiKey, 'm': storeId}
+        qs: {'q': 'wine', 'akey': apiKey, 'm': storeId}
         }, 
         function(err, response, body) {
             if (!err && response.statusCode == 200) {
                 var jsonObj = JSON.parse(body);
-                var data = jsonObj.wines;
                 console.log(jsonObj.meta);
+                var data = jsonObj.wines;
                 callback(data);
             } else {
                 console.log(err);
@@ -54,9 +55,9 @@ exports.wineryDetail = function(wineryId, callback) {
         }, 
         function(err, response, body) {
             if (!err && response.statusCode == 200) {
-                //console.log(body);
                 try {
                     var jsonObj = JSON.parse(body);
+                    console.log(jsonObj.meta);
                     var data = jsonObj.winery;
                     callback(data);
                 } catch(e) {

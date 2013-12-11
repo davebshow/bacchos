@@ -21,11 +21,17 @@ exports.listen = function(server) {
         // get wines by store
         socket.on('storeId', getWineries);
 
+        // find winery info for wine
+        socket.on('wineryId', emitWinery);
+
+
+        // upon client laying down store information-
+        // we query snooth for the wines of all stores in zicode
         function getWines(data) {
 
             // get zipcode data for winesByStore query
-            var zipcode = data[0];
-            var wineStores = data[1];
+            var zipcode = data.zip;   
+            var wineStores = data.stores;
 
             // build data structures 
             var wineByStore = zipcodesStoresWines[zipcode] = {};
@@ -38,12 +44,15 @@ exports.listen = function(server) {
                 for (var i=0; i<results.length; i++) {
                     var storeWines = results[i];
                     if (storeWines) {
-                        wineByStore[storeWines[0]] = storeWines[1];
+                        wineByStore[storeWines.storeid] = storeWines.wines;
                     }
                 }
             });
         };
 
+
+        // emit wines upon user request and start process of building winery-
+        // information about all wines sold in store 
         function getWineries(data) {
             var zipcode = data.zip;
             var storeId = data.store;
@@ -62,13 +71,12 @@ exports.listen = function(server) {
                 async.map(wines, wineryCall, function(err, results) {
                     for (var i=0; i<results.length; i++) {
                         var  wineryData = results[i];
-                        var wine = wineryData[0];
-                        var winery = wineryData[1];
-                        console.log(winery);
+                        var wine = wineryData.wineid;
+                        var winery = wineryData.winery;
                         if (winery) {
                             if (winery.lat && winery.lng) {
                                 winesWineries[wine] = winery;
-                            } else {
+                            } else {// query the server for a zip code upon user form input
                                 console.log('Geocoding necessary')
                             }
                         }
@@ -78,6 +86,29 @@ exports.listen = function(server) {
                 socket.emit('wines', 'No wines located for this store');
             }   
         };
+
+        function emitWinery(data) {
+            var wineId = data.wineid;
+            console.log(wineId);
+            var wineryId = data.wineryid;
+            console.log(wineryId);
+
+            var winery = winesWineries[wineId];
+            //console.log(winery);
+            if (!winery) {
+                console.log('searching api')
+                snoothClient.wineryDetail(winery, function(data) {
+                    winery = data;
+                });
+            } else {
+                console.log('socket_data')
+            }
+            if (winery) {
+                socket.emit('winery', winery);
+            } else {
+                socket.emit('winery', 'No winery found for this wine');
+            }
+        };
         
 
         // async iterator
@@ -85,10 +116,8 @@ exports.listen = function(server) {
             if (wineStore.num_wines>0) {    
                 var storeId = wineStore.id
                 snoothClient.winesByStore(storeId, function(data) {
-                    var responseArray = [];
-                    responseArray[0] = storeId;
-                    responseArray[1] = data;
-                    return doneCallback(null, responseArray);
+                    var response = {storeid: storeId, wines:data};
+                    return doneCallback(null, response);
                 });
             } else {
                 return doneCallback(null, false);
@@ -100,10 +129,8 @@ exports.listen = function(server) {
             var wineryId = wine.winery_id;
             snoothClient.wineryDetail(wineryId, function(data) {
                 if (data) {
-                    var responseArray = [];
-                    responseArray[0] = wineId;
-                    responseArray[1] = data;
-                return doneCallback(null, responseArray);
+                    var response = {wineid: wineId, winery:data};
+                return doneCallback(null, response);
                 } else {
                     return doneCallback(null, false);
                 }

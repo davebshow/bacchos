@@ -12,9 +12,7 @@ exports.storeQueryHandler = function(req, res) {
     var zipcode = req.query['zipcode'];
     // make request to Snooth using the client module
     snoothClient.storeQuery(country, zipcode, function(data) {
-        var responseData = [];
-        responseData[0] = zipcode;
-        responseData[1] = data;
+        var responseData = {zip: zipcode, stores: data};
         res.json(responseData);
     });
 }

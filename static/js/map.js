@@ -19,35 +19,66 @@ var mapInit = function() {
 
 
 wineMap = function(initLat, initLng) {
+
+
+    // autosize div height
     var window_height = $(window).height();
     var canvas_height = window_height - 20;
     $('#container').height(canvas_height);
+    $(window).resize(adjustMapSize);
+
+
+    // instantiate map
     var map = L.map('map').setView([initLat, initLng], 8);
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+
+    // fire up them sockets
     var socket = io.connect('http://localhost', {secure: false});
     socket.on('connect', function() {
         console.log('Socket connection established');
     });
 
+
+    // when server sends wine data show it in sidebar
     socket.on('wines', displayWines);
 
-    $(window).resize(adjustMapSize); 
 
-    var popup = L.popup();
-
-    map.on('click', onMapClick);
-
-    $('#zipcode-form').submit(zipcodeQuery);
-
-    $(document).on('click', '.store-button', storeQuery);
-
-    $(document).on('click', '.wine-button', function() {
-        console.log($(this).data('wineryid'));
+    socket.on('winery', function(data) {
+        console.log(data);
     });
 
+
+    // these are map popups
+    var popup = L.popup();
+
+
+    // show lat and lng when you click on the map
+    map.on('click', onMapClick);
+
+
+    // find wine stores by zipcode on user form submit
+    $('#zipcode-form').submit(zipcodeQuery);
+
+
+    // get a stores wines when user clicks the wines button
+    $(document).on('click', '.store-button', storeQuery);
+
+
+    // get a wines winery info - not finished
+    $(document).on('click', '.wine-button', function() {
+        var wineId = $(this).data('wineid');
+        var wineryId = $(this).data('wineryid');
+        console.log(wineId)
+        console.log(wineryId)
+        var data = {wineid: wineId, wineryid: wineryId}
+        socket.emit('wineryId', data);
+    });
+
+
+    // insert the wine info html into the info column
     function displayWines(wines) {
         // handle strange errors
         if (wines == 'No wines located for this store') {
@@ -57,12 +88,13 @@ wineMap = function(initLat, initLng) {
             for (var i=0; i<wines.length; i++) {
                 var wine = wines[i]; 
                 var name = wine.name;
+                var wineId = wine.code;
                 var vintage = wine.vintage;
                 var varietal = wine.varietal;
                 var winery = wine.winery;
                 var wineryId = wine.winery_id;
                 var wineDetails = name + '<br>' + vintage + ' ' + varietal; 
-                var wineryDetails = ' - '+ '<input type="button" class="wine-button" data-wineryid=' + wineryId + ' value=' + winery + ' /><br><br>';
+                var wineryDetails = ' - '+ '<input type="button" class="wine-button" data-wineryid=' + wineryId + ' data-wineid=' + wineId + ' value=' + winery  + '/><br><br>';
                 var newContent = newContent + wineDetails + wineryDetails;
                 console.log(wineryDetails)
             }
@@ -76,6 +108,8 @@ wineMap = function(initLat, initLng) {
         }
     };
 
+
+    // keep the same map proportions if you adjust the wine size
     function adjustMapSize() {
         var window_height = $(window).height();
         var canvas_height = window_height - (window_height/20);
@@ -83,6 +117,8 @@ wineMap = function(initLat, initLng) {
 
     };
 
+
+    // pop up a lat lng box when you click the map
     function onMapClick(e) {
         popup
             .setLatLng(e.latlng)
@@ -90,6 +126,8 @@ wineMap = function(initLat, initLng) {
             .openOn(map);
     };
 
+
+    // query the server for a zip code upon user form input
     function zipcodeQuery(e) {
         var zipcode = $(this).serialize();
         var formURL = $(this).attr("action");
@@ -104,12 +142,16 @@ wineMap = function(initLat, initLng) {
         e.preventDefault(); //STOP default action
     };// zipcode submit
 
+
+    // query the server for a store's wine inventory
     function storeQuery() {
         var zipcode = $(this).data('zipcode');
         var storeId = $(this).data('storeid');
         socket.emit('storeId', {zip: zipcode, store: storeId});
     };
 
+
+    // query the server about
     function wineryQuery(e) {
         console.log('click');
     }
@@ -117,8 +159,8 @@ wineMap = function(initLat, initLng) {
 
     function addStoreMarkers(data, textStatus, jqXHR) {
         socket.emit('storeData', data);
-        var zipcode = data[0];   
-        var storeData = data[1];
+        var zipcode = data.zip;   
+        var storeData = data.stores;
         //console.log('adding markers');
         if (storeData.length>0) {
             var latArray = [];
