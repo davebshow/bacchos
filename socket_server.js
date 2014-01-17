@@ -8,21 +8,22 @@ exports.listen = function(server) {
 
     // web sockets
     io.sockets.on('connection', function(socket) {
-        console.log('Socket connection established');
+        console.log('Socket connection established')
 
         // data goes here
-        var zipcodesStoresWines = {};
-        var winesWineries = {}
+        var zipcodeStores = {}
+        ,   storeWines = {}
+        ,   winesWineries = {}
 
         // find and store available wines by store
         // happens in backgro;und after zicode search
-        socket.on('storeData', getWines);
+        socket.on('storeData', getWines)
 
         // get wines by store
-        socket.on('storeId', getWineries);
+        socket.on('storeId', getWineries)
 
         // find winery info for wine
-        socket.on('wineryId', emitWinery);
+        socket.on('wineryId', emitWinery)
 
 
         // upon client laying down store information-
@@ -34,17 +35,18 @@ exports.listen = function(server) {
             var wineStores = data.stores;
 
             // build data structures 
-            var wineByStore = zipcodesStoresWines[zipcode] = {};
+            zipcodeStores[zipcode] = wineStores
 
             // get ids for async map
             // Vineyard async requests too plus http://wiki.openstreetmap.org/wiki/Nominatim
             async.map(wineStores, wineCall, function(err, results) {
 
                 // need to handle error
+                
                 for (var i=0; i<results.length; i++) {
-                    var storeWines = results[i];
-                    if (storeWines) {
-                        wineByStore[storeWines.storeid] = storeWines.wines;
+                    var wines = results[i];
+                    if (wines) {
+                        storeWines[wines.storeId] = wines.wines;
                     }
                 }
             });
@@ -58,7 +60,8 @@ exports.listen = function(server) {
             var storeId = data.store;
 
             // here will check socket storage call api if necessary
-            var wines = zipcodesStoresWines[zipcode][storeId];
+            //console.log(zipcodeStoresWines)
+            var wines = storeWines[storeId];
             if (!wines) {
                 snoothClient.winesByStore(storeId, function(data) {
                     wines = data;
@@ -116,7 +119,7 @@ exports.listen = function(server) {
             if (wineStore.num_wines>0) {    
                 var storeId = wineStore.id
                 snoothClient.winesByStore(storeId, function(data) {
-                    var response = {storeid: storeId, wines:data};
+                    var response = {storeId: storeId, wines:data};
                     return doneCallback(null, response);
                 });
             } else {
