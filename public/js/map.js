@@ -36,7 +36,7 @@ wineMap = function(initLat, initLng) {
 
 
     // fire up them sockets
-    var socket = io.connect('http://localhost', {secure: false});
+    var socket = io.connect();
     socket.on('connect', function () {
         console.log('Socket connection established');
     });

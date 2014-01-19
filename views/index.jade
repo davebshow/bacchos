@@ -1,6 +1,7 @@
 doctype 5
-html(lang="en")
+html(lang="en" ng-app="bacchosApp")
     head
+        meta(charset="utf-8")
         title=title
         link(rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css")
         link(rel="stylesheet" href="stylesheets/map.css")
@@ -20,15 +21,22 @@ html(lang="en")
                         input(type="submit", value="search")
                 div(id="wine-box")
             div(id="map-wrapper")
-                div(id="map")
+                map(id="map")
+        script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js").
         script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
         script(type="text/javascript", src="http://code.jquery.com/jquery-1.10.0.min.js").
-        script(type="text/javascript", src="/js/map.js").
+        script(src="js/controllers.js")
+        
         script(type="text/javascript" src="/socket.io/socket.io.js").
         script(type="text/javascript").
-            $(function(){
-                $(document).ready(function() {
-                    mapInit();
-                });
-            });
+                    $(function(){
+                        $(document).ready(function() {
+                            var window_height = $(window).height();
+                            var canvas_height = window_height - 20;
+                            $('#container').height(canvas_height);
+                            $(window).resize(adjustMapSize);
+                        
+                        });
+                    });
+         
 

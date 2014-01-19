@@ -4,7 +4,8 @@ var express = require('express');
 // create app and webserver
 // add app as request handler
 var app = express();
-var server = require('http').createServer(app);
+var http = require('http');
+var server = http.createServer(app);
 
 // piggyback socket on http server
 var socketServer = require('./lib/socket_server')
