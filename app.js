@@ -7,12 +7,12 @@ var app = express();
 var server = require('http').createServer(app);
 
 // piggyback socket on http server
-var socketServer = require('./socket_server')
+var socketServer = require('./lib/socket_server')
 socketServer.listen(server);
 
 // local dependencies
-var errors = require('./middleware/errors');
-var routes = require('./controllers/routes');
+var errors = require('./lib/middleware/errors');
+var routes = require('./lib/routes');
 
 
 // view settings
@@ -23,7 +23,7 @@ app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(app.router);
-app.use(express.static(__dirname + '/static'));
+app.use(express.static(__dirname + '/public'));
 app.use(express.errorHandler({thowStack: true, dumpExceptions: true}));
 app.use(errors.pageNotFound);
 
