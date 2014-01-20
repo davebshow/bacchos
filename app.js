@@ -39,7 +39,7 @@ app.use(errors.pageNotFound);
 
 // routes
 app.get('/', routes.index);
-app.get('/stores', errors.protectAjax, routes.storeQueryHandler);
+app.get('/stores', routes.storeQueryHandler);
 
 // http server bind and listen to port 3000
 server.listen(8080);

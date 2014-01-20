@@ -5,7 +5,7 @@ var bacchosControllers = angular.module('bacchosControllers', []).
 		function ($scope) {
 			$scope.stores = {};
 				$scope.$watch('stores', function () {
-				console.log('stores scope changed');
+					console.log('stores scope changed');
 			})
 		    angular.extend($scope, {
 				center: {
@@ -22,30 +22,34 @@ var bacchosControllers = angular.module('bacchosControllers', []).
 
 	controller('GetStores', ['$scope', '$http',
 		function ($scope, $http) {
-			$scope.formData = {};
+
+			$scope.keys = {};
+
+    		$scope.addKeys = function (formData) {
+        		$scope.keys = angular.copy(formData);
+    		}
 			
+
 			$scope.processForm = function() {
+
 				$http({
 				    method  : 'GET',
 				    url     : '/stores',
-			        data    : $.param($scope.formData),  // pass in data as strings
+			        params  : $scope.keys,  // pass in data as strings
 				    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
 				})
 		        .success(function(data) {
-			   	    console.log('status', status);
-	    			console.log('headers', headers);
-	    			console.log('config', config);
+			   	
 	   				console.log('data', data);
 
 				  	if (!data.success) {
+				  		console.log('fail', data)
 				        // if not successful, bind errors to error variables
-				            $scope.errorName = data.errors.name;
-				            $scope.errorSuperhero = data.errors.superheroAlias;
+				            //$scope.errorName = data.errors.name;
+				            //$scope.errorSuperhero = data.errors.superheroAlias;
 		            } else {
-				      	$scope.apply(function () {
-				      	// if successful, bind success message to message
-		                	$scope.stores = data.message;
-		                });
+		                $scope.stores = data.message;
+		                
 			        }
 			    });
 			};

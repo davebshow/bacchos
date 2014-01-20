@@ -14,12 +14,12 @@ html(lang="en" ng-app="bacchosApp")
                     h4 Search for wine stores by country and zipcode
                     div(id="form-wrapper" class="info-column-content" ng-controller="GetStores" )
                         form(ng-submit="processForm()")
-                            select(ng-model="loc.country") 
+                            select(ng-model="formData.country") 
                                 option US
                                 option CA
                                 option ES
-                            input(type="text", ng-model="loc.zipcode" placeholder="zipcode", value="90210")
-                            button(type="submit")
+                            input(type="text", ng-model="formData.zipcode" placeholder="zipcode", value="90210")
+                            button(ng-click="addKeys(formData)")
                 div(class="col-md-9" ng-controller="MapCtrl")
                     
                     leaflet(id="map" center="center")
