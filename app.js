@@ -25,6 +25,15 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(app.router);
 app.use(express.static(__dirname + '/public'));
+// This should work against XSRF
+app.use(express.cookieSession());
+app.use(express.csrf())
+app.use(function (req, res, next) {
+  res.cookie('XSRF-TOKEN', req.session._csrf);
+  res.locals.csrftoken = req.session._csrf;
+  next();
+})
+// errors
 app.use(express.errorHandler({thowStack: true, dumpExceptions: true}));
 app.use(errors.pageNotFound);
 
