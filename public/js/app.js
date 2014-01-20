@@ -8,11 +8,11 @@ bacchosApp.config(['$routeProvider',
 	function ($routeProvider) {
 		$routeProvider.
 			when('/', {
-				templateUrl: '/index.jade',
+				templateUrl: 'partials/index.jade',
 				controller: 'MapCtrl'
 			}).
 			otherwise({
-        		redirectTo: '/'
+        		redirectTo: 'partials/index.jade'
       		});
 }]);
 

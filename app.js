@@ -27,12 +27,8 @@ app.use(app.router);
 app.use(express.static(__dirname + '/public'));
 // This should work against XSRF
 app.use(express.cookieSession());
-app.use(express.csrf())
-app.use(function (req, res, next) {
-  res.cookie('XSRF-TOKEN', req.session._csrf);
-  res.locals.csrftoken = req.session._csrf;
-  next();
-})
+app.use(express.csrf());
+app.use(errors.xsrfProtect);
 // errors
 app.use(express.errorHandler({thowStack: true, dumpExceptions: true}));
 app.use(errors.pageNotFound);
@@ -44,3 +40,4 @@ app.get('/stores', routes.storeQueryHandler);
 // http server bind and listen to port 3000
 server.listen(8080);
 console.log('Listening on port 8080');
+
