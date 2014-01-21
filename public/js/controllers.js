@@ -1,47 +1,31 @@
 var bacchosControllers = angular.module('bacchosControllers', []).
 
 
-    controller('MapCtrl', ['$scope', 'addStoreMarkers',
-        function ($scope, addStoreMarkers) {
-            $scope.$parent.stores = [];
+    controller('MapCtrl', ['$scope', 'mapService',
+        function ($scope, mapService) {
+            var centerLat = 40.095
+            ,   centerLng = -3.823
+            ,   zoom = 6;
             $scope.markers = {}
-            $scope.centerLat = 40.095;
-            $scope.centerLng = -3.823;
-            $scope.zoom = 6;
+            $scope.center = {
+                lat: centerLat,
+                lng: centerLng,
+                zoom: zoom
+            },
+            $scope.$parent.stores = [];
             $scope.mapService = mapService;
             $scope.$parent.$watch('stores', function () {
                 var data = $scope.$parent.stores;
                 if (data.length>0) {
-                    var processedData = mapService.process(data)
+                    var processedData = mapService.processStores(data)
                     $scope.markers = processedData.markers;
-                    $scope.centerLat = processedData.centerLat;
-                    $scope.centerLng = processedData.centerLng;
-                    $scope.zoom = 8;
-                     angular.extend($scope, {
-                        center: {
-                            lat: $scope.centerLat,
-                            lng: $scope.centerLng,
-                            zoom: $scope.zoom
-                        },
-                        markers: $scope.markers,
-                        defaults: {
-                            scrollWheelZoom: false
-                        }
-                    });
-                  
-                }
-            });
-            angular.extend($scope, {
-                center: {
-                    lat: $scope.centerLat,
-                    lng: $scope.centerLng,
-                    zoom: $scope.zoom
-                    },
-                    markers: $scope.markers,
-                    defaults: {
-                        scrollWheelZoom: false
+                    $scope.center = {
+                        lat: processedData.centerLat,
+                        lng: processedData.centerLng,
+                        zoom: 8
                     }
-                });
+                }
+            });  
         }
     ]).
             
