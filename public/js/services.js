@@ -2,8 +2,13 @@ var bacchosServices = angular.module('bacchosServices', []).
 
      factory('mapService', function () {
         return {
+            processStores: processStoreMarkers
+        }
+    });
+     
 
-processStores: function(data) {
+// this will go in jscript utils
+var processStoreMarkers = function(data) {
     var   latArray = []
     ,     lngArray = []
     ,     markers = {};
@@ -50,6 +55,3 @@ processStores: function(data) {
     ,   outputData = {markers: markers, centerLat: centerLat, centerLng: centerLng}; 
     return outputData
 }
-        }
-    });
-     
