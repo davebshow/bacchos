@@ -36,6 +36,7 @@ app.use(errors.pageNotFound);
 // routes
 app.get('/', routes.index);
 app.get('/stores', routes.storeQueryHandler);
+app.get('/store/wines', routes.wineQueryHandler);
 
 // http server bind and listen to port 3000
 server.listen(8080);

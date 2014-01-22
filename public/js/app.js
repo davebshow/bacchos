@@ -3,7 +3,3 @@ var bacchos = angular.module('bacchos', [
 	'bacchosServices',
 	'leaflet-directive'
 ]);
-
-
-
-
