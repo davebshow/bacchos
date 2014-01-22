@@ -20,9 +20,9 @@ var bacchosControllers = angular.module('bacchosControllers', []).
                 $scope.mapData = data;  
                 $scope.markers = $scope.mapData.markers || {};
                 $scope.center = {
-                    lat: $scope.mapData.centerLat || 40.095,
-                    lng: $scope.mapData.centerLng  || -3.823,    
-                    zoom: $scope.mapData.zoom || 6
+                    lat: $scope.mapData.centerLat,
+                    lng: $scope.mapData.centerLng,    
+                    zoom: $scope.mapData.zoom 
                 }
             }
 
@@ -37,15 +37,15 @@ var bacchosControllers = angular.module('bacchosControllers', []).
             
             // Request the store data from the service
             $scope.processForm = function() {
-                var promiseRequest = mapService.promiseRequest();
-                var mapData = promiseRequest.get('/stores', $scope.keys);  
-                mapData.then(function (data) {
+                var mapData = mapService.get('/stores', $scope.keys);  
+                mapData.success(function (data, status, headers, config) {
                     console.log('woop', data)
                     $scope.updateScope(data);
-                },
-                function (err) {
-                    console.log(err);
-                }) 
+                }).
+                error(function (data, status, headers, config) {
+                    console.log(data);
+                    console.log(status);
+                });
                 
             };     
         }
