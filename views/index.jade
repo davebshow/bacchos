@@ -6,13 +6,13 @@ html(lang="en" ng-app="bacchos")
         link(rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css")
         link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css")
         link(rel="stylesheet" href="stylesheets/map.css")
-    body
+    body(ng-controller="MapCtrl")
         div(class="container")
             div(class="row")
                 div(class="col-md-3")
                     h3 Bacchos Wine
                     h4 Search for wine stores by country and zipcode
-                    div( ng-controller="GetStores" )
+                    div
                         form(ng-submit="processForm()" role='form')
                             div(class="form-group")
                                 input(type="text", ng-model="formData.zipcode" class="form-control" placeholder="zipcode" value="90210")
@@ -24,7 +24,7 @@ html(lang="en" ng-app="bacchos")
                                     option(value="ES") Spain
 
                             button(type="submit" class="btn btn-info" ng-click="addKeys(formData)") search
-                div(class="col-md-9" ng-controller="MapCtrl" id="map-div")
+                div(class="col-md-9" id="map-div")
                     
                     leaflet(id="map" center="center" markers="markers")
         script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js").

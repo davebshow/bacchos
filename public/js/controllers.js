@@ -3,61 +3,50 @@ var bacchosControllers = angular.module('bacchosControllers', []).
 
     controller('MapCtrl', ['$scope', 'mapService',
         function ($scope, mapService) {
-            var centerLat = 40.095
-            ,   centerLng = -3.823
-            ,   zoom = 6;
-            $scope.markers = {}
-            $scope.center = {
-                lat: centerLat,
-                lng: centerLng,
-                zoom: zoom
-            },
-            $scope.$parent.stores = [];
-            $scope.mapService = mapService;
-            $scope.$parent.$watch('stores', function () {
-                var data = $scope.$parent.stores;
-                if (data.length>0) {
-                    var processedData = mapService.processStores(data)
-                    $scope.markers = processedData.markers;
-                    $scope.center = {
-                        lat: processedData.centerLat,
-                        lng: processedData.centerLng,
-                        zoom: 8
-                    }
+
+            // Set params for map init
+            angular.extend($scope, {
+               markers: {},
+                center:  {
+                    lat: 40.095,
+                    lng: -3.823,    
+                    zoom:  6
                 }
-            });  
-        }
-    ]).
-            
+            })
 
-    controller('GetStores', ['$scope', '$http',
-        function ($scope, $http) {
+            // Update the scope store request
+            $scope.updateScope = function(data) {
+                console.log('updating')
+                $scope.mapData = data;  
+                $scope.markers = $scope.mapData.markers || {};
+                $scope.center = {
+                    lat: $scope.mapData.centerLat || 40.095,
+                    lng: $scope.mapData.centerLng  || -3.823,    
+                    zoom: $scope.mapData.zoom || 6
+                }
+            }
 
+            // Country and zip for stores request
             $scope.keys = {};
 
+            // add the kwys from the form
             $scope.addKeys = function (formData) {
+                console.log('keys loaded');
                 $scope.keys = angular.copy(formData);
             }
             
+            // Request the store data from the service
             $scope.processForm = function() {
-                console.log('processing')
-                $http({
-                    method  : 'GET',
-                    url     : '/stores',
-                    params  : $scope.keys,  
-                    headers : {'Content-Type': 'application/x-www-form-urlencoded'}  // set the headers so angular passing info as form data (not request payload)
-                }).
-                // gonna have to handle this better
-                success(function(data, status, headers, config) {
-                    console.log('got stores');
-                    $scope.$parent.stores = data;
-                }).error(function(data, status, headers, config) {
-                    console.log(status)
-                })
-            };
+                var promiseRequest = mapService.promiseRequest();
+                var mapData = promiseRequest.get('/stores', $scope.keys);  
+                mapData.then(function (data) {
+                    console.log('woop', data)
+                    $scope.updateScope(data);
+                },
+                function (err) {
+                    console.log(err);
+                }) 
                 
+            };     
         }
     ]);
-   
-
-    
