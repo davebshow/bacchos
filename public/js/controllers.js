@@ -4,6 +4,8 @@ var bacchosControllers = angular.module('bacchosControllers', []).
     controller('MapCtrl', ['$scope', 'mapService',
         function ($scope, mapService) {
 
+            var mapData = {};
+
             // Set params for map init
             angular.extend($scope, {
                 markers: {},
@@ -19,25 +21,24 @@ var bacchosControllers = angular.module('bacchosControllers', []).
                     }
                 }
             });
-            $scope.mapData = {};
-
+            
             $scope.$on('leafletDirectiveMarker.mouseover', function (event, markerName) {
                 var name = markerName.markerName;
-                console.log($scope.mapData.markers[name]['sidebar']);
+                console.log(mapData.markers[name]['sidebar']);
                 //console.log(sidebar)
             })
 
-            $scope.search = true;
+            
             // Update the scope store request
-            $scope.updateScope = function(data) {
+            var updateScope = function(data) {
                 console.log('updating')
-                $scope.mapData = data;  
-                console.log($scope.mapData)
-                $scope.markers = $scope.mapData.markers || {};
+                mapData = data;  
+                console.log(mapData)
+                $scope.markers = mapData.markers || {};
                 $scope.center = {
-                    lat: $scope.mapData.centerLat || 40.095,
-                    lng: $scope.mapData.centerLng || -3.823,    
-                    zoom: $scope.mapData.zoom 
+                    lat: mapData.centerLat || 40.095,
+                    lng: mapData.centerLng || -3.823,    
+                    zoom: mapData.zoom 
                 }
             }
 
@@ -55,7 +56,7 @@ var bacchosControllers = angular.module('bacchosControllers', []).
                 var mapData = mapService.get(url, $scope.keys);  
                 mapData.success(function (data, status, headers, config) {
                     console.log('woop', data)
-                    $scope.updateScope(data);
+                    updateScope(data);
                 }).
                 error(function (data, status, headers, config) {
                     console.log(data);
@@ -69,7 +70,7 @@ var bacchosControllers = angular.module('bacchosControllers', []).
                 var wineData = mapService.get('/store/wines', {storeId: storeId});
                 mapData.success(function (data, status, headers, config) {
                     console.log('woop', data)
-                    $scope.updateScope(data);
+                    updateScope(data);
                 }).
                 error(function (data, status, headers, config) {
                     console.log(data);
