@@ -7,14 +7,9 @@ var app = express();
 var http = require('http');
 var server = http.createServer(app);
 
-// piggyback socket on http server
-var socketServer = require('./lib/socket_server')
-socketServer.listen(server);
-
 // local dependencies
 var errors = require('./lib/middleware/errors');
 var routes = require('./lib/routes');
-
 
 // view settings
 app.set('views', __dirname + '/views');
