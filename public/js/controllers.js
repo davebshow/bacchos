@@ -19,7 +19,7 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
             // Update the scope store request
             $scope.updateScope = function(data) {
                 console.log('updating')
-                $scope.wineContent = false;
+                $scope.wineContent = false; 
                 mapData = data;
                 $scope.markers = mapData.markers || {};
                 $scope.center = {
@@ -55,9 +55,8 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
             $scope.getWines = function(storeId) {
                 console.log('query for wines')
                 var wineData = mapService.get('/store/wines', {storeId: storeId});
-                mapData.success(function (data, status, headers, config) {
-                    console.log('woop', data)
-                    $scope.updateScope(data);
+                wineData.success(function (data, status, headers, config) {
+                    console.log('woop', data);
                 }).
                 error(function (data, status, headers, config) {
                     console.log(data);

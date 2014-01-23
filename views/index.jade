@@ -30,6 +30,8 @@ html(lang="en" ng-app="bacchos")
                         div(ng-if="store.url == undefined")
                             h4 {{store.name}}
                             p {{store.loc}}
+                        div(ng-if="store.wines === true")
+                            a(href="#store/wines" ng-click="getWines(store.id)") wines
                 div(class="col-md-9" id="map-div" resize)
                     leaflet(id="map" center="center" markers="markers")
         script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js").
