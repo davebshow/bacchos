@@ -13,7 +13,6 @@ html(lang="en" ng-app="bacchos")
                 div(class="col-md-3")
                     h3 Bacchos Wine
                     div(class="well")
-                        h4 Search for wine stores by country and zipcode
                         form(ng-submit="processForm('/stores')" role='form')
                             div(class="form-group")
                                 input(type="text", ng-model="formData.zipcode" class="form-control" placeholder="zipcode" value="90210")
