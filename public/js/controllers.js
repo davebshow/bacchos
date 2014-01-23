@@ -7,6 +7,8 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
             var mapData = {};
 
             $scope.wineContent = false;
+            $scope.wines = {};
+
 
             $scope.$on('leafletDirectiveMarker.mouseover', function (event, markerName) {
                 $scope.wineContent = true;
@@ -19,6 +21,7 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
             // Update the scope store request
             $scope.updateScope = function(data) {
                 console.log('updating')
+                $scope.wines = {};
                 $scope.wineContent = false; 
                 mapData = data;
                 $scope.markers = mapData.markers || {};
@@ -57,6 +60,7 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
                 var wineData = mapService.get('/store/wines', {storeId: storeId});
                 wineData.success(function (data, status, headers, config) {
                     console.log('woop', data);
+                    $scope.wines = data;
                 }).
                 error(function (data, status, headers, config) {
                     console.log(data);
