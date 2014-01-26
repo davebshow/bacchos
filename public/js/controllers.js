@@ -7,15 +7,16 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
             var mapData = {};
 
             $scope.wineContent = false;
-            $scope.wines = {};
-
-
-            $scope.$on('leafletDirectiveMarker.mouseover', function (event, markerName) {
+            $scope.hideWines = true;
+           
+            $scope.$on('leafletDirectiveMarker.click', function (event, markerName) {
                 $scope.wineContent = true;
+                $scope.hideWines = true;
                 var name = markerName.markerName;
                 var store = mapData.markers[name]['store'];
                 $scope.store = store;
-            })
+
+            });
 
             $scope.search = true;
             // Update the scope store request
@@ -45,7 +46,7 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
             $scope.processForm = function(url) {
                 var mapData = mapService.get(url, $scope.keys);  
                 mapData.success(function (data, status, headers, config) {
-                    console.log('woop', data)
+                    console.log('woop')
                     $scope.updateScope(data);
                 }).
                 error(function (data, status, headers, config) {
@@ -53,21 +54,7 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
                     console.log(status);
                 });
                 
-            };  
-
-            $scope.getWines = function(storeId) {
-                console.log('query for wines')
-                var wineData = mapService.get('/store/wines', {storeId: storeId});
-                wineData.success(function (data, status, headers, config) {
-                    console.log('woop', data);
-                    $scope.wines = data;
-                }).
-                error(function (data, status, headers, config) {
-                    console.log(data);
-                    console.log(status);
-                });
-
-            }; 
+            };   
 
             // Set params for map init
             angular.extend($scope, {
@@ -79,7 +66,7 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
                 },
                 events: {
                     markers: {
-                        enable: ['click', 'mouseover'],
+                        enable: ['click', 'mouseover', 'mouseout'],
                         logic: 'emit'
                     }
                 }

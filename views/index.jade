@@ -10,9 +10,10 @@ html(lang="en" ng-app="bacchos")
     body(ng-controller="MapCtrl")
         div(class="container")
             div(class="row")
-                div(class="col-md-3" resize)
+                div(class="col-md-8" id="map-div" resize)
+                    leaflet(id="map" center="center" markers="markers")
+                div(class="col-md-4" resize)
                     div(class="full-height")
-                        h3 Bacchos Wine
                         div(class="well")
                             form(ng-submit="processForm('/stores')" role='form')
                                 div(class="form-group")
@@ -32,15 +33,14 @@ html(lang="en" ng-app="bacchos")
                                 h4 {{store.name}}
                                 p {{store.loc}}
                             div(ng-if="store.wines === true")
-                                a(href="#store/wines" ng-click="getWines(store.id)") wines
-                            div(ng-if="wines != undefined" class="y-scrollable")
-                                ul  
-                                    li(ng-repeat="wine in wines")
-                                        {{wine}}
-                div(class="col-md-9" id="map-div" resize)
-                    leaflet(id="map" center="center" markers="markers")
+                                a(href="#store/wines" get-wines) wines
+                                div(class="y-scrollable" ng-hide='hideWines' size-wines)
+                                    ul()  
+                                        li(ng-repeat="wine in wines")
+                                            b {{wine.name}} ${{wine.price}}
+                                            br
+                                            a(src="#winery" ng-click="getWinery(wine.wineryId)") {{wine.winery}}
         script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js").
-        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js").
         script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-sanitize.js").
         script(src="js/leaflet_directive.js").
