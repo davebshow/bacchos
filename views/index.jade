@@ -18,14 +18,14 @@ html(lang="en" ng-app="bacchos")
                             form(ng-submit="processForm('/stores')" role='form')
                                 div(class="form-group")
                                     input(type="text", ng-model="formData.zipcode" class="form-control" placeholder="zipcode" value="90210")
-                                div(class="form-group")
+                                div(class="form-group" form-height)
                                     select(ng-model="formData.country" class="form-control" id="country-select") 
                                         option(value="" default selected) select country
                                         option(value="US") United States
                                         option(value="CA") Canada
                                         option(value="ES") Spain
                                 button(type="submit" class="btn btn-info" ng-click="addKeys(formData)") search
-                        div(class="well" ng-show="wineContent")
+                        div(class="well" ng-show="wineContent" store-height)
                             div(ng-if="store.url != undefined")
                                 h4: a(href="store.url"){{store.name}}
                                 p {{store.loc}}
@@ -33,13 +33,15 @@ html(lang="en" ng-app="bacchos")
                                 h4 {{store.name}}
                                 p {{store.loc}}
                             div(ng-if="store.wines === true")
-                                a(href="#store/wines" get-wines) wines
-                                div(class="y-scrollable" ng-hide='hideWines' size-wines)
+                                a(href="#store/wines" ng-click="getWines(store.storeId)") wines
+                                div(class="y-scrollable" ng-hide='hideWines')
                                     ul()  
                                         li(ng-repeat="wine in wines")
                                             b {{wine.name}} ${{wine.price}}
                                             br
-                                            a(src="#winery" ng-click="getWinery(wine.wineryId)") {{wine.winery}}
+                                            div(ng-if="wine.winery_id != undefined") 
+                                                a(src="#winery" ng-click="getWinery(wine.winery_id)") {{wine.winery}}
+                        div(class="well" ng-show="wineryContent")
         script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js").
         script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-sanitize.js").

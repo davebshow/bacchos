@@ -1,13 +1,20 @@
-var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
+var bacchosControllers = angular.module('bacchosControllers', [
+    'ngSanitize', 
+]).
+    controller('MapCtrl', [
+        '$scope',
+        '$rootScope',
+        '$timeout', 
+        '$window', 
+        'mapService',
+        'geoLocation',
 
-
-    controller('MapCtrl', ['$scope', 'mapService',
-        function ($scope, mapService) {
+        function ($scope, $rootScope, $window, $timeout, mapService, geoLocation) {
 
             var mapData = {};
-
             $scope.wineContent = false;
             $scope.hideWines = true;
+            $scope.wineryContent = false;
            
             $scope.$on('leafletDirectiveMarker.click', function (event, markerName) {
                 $scope.wineContent = true;
@@ -15,6 +22,8 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
                 var name = markerName.markerName;
                 var store = mapData.markers[name]['store'];
                 $scope.store = store;
+                $rootScope.$broadcast('viewStore');
+                
 
             });
 
@@ -22,13 +31,12 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
             // Update the scope store request
             $scope.updateScope = function(data) {
                 console.log('updating')
-                $scope.wines = {};
-                $scope.wineContent = false; 
+                $scope.wines = {}; 
                 mapData = data;
-                $scope.markers = mapData.markers || {};
+                $scope.markers = mapData.markers;
                 $scope.center = {
-                    lat: mapData.centerLat || 40.095,
-                    lng: mapData.centerLng || -3.823,    
+                    lat: mapData.centerLat,
+                    lng: mapData.centerLng,    
                     zoom: mapData.zoom 
                 }
             }
@@ -56,13 +64,53 @@ var bacchosControllers = angular.module('bacchosControllers', ['ngSanitize']).
                 
             };   
 
+            $scope.getWines = function(storeId) {
+                console.log('storeId', storeId)
+
+                var wineData = mapService.get('/store/wines', {storeId: storeId});
+                wineData.success(function (data, status, headers, config) {
+                    console.log('woop', data);
+                    $scope.hideWines = false;
+                    $scope.wines = data;
+                }).
+                error(function (data, status, headers, config) {
+                    console.log(data);
+                    console.log(status);
+                });
+
+            };
+
+            $scope.getWineries = function(wineId) {
+                console.log('wineId', wineId)
+
+                var wineData = mapService.get('/wine/winery', {wineId: wineId});
+                wineData.success(function (data, status, headers, config) {
+                    console.log('woop', data);
+                    $scope.hideWines = true;
+                    $scope.winery = data;
+                }).
+                error(function (data, status, headers, config) {
+                    console.log(data);
+                    console.log(status);
+                });
+
+            };
+
+            geoLocation.get().then(function (position) {
+                console.log('ctrl pos', position);
+                $scope.center = {
+                    lat: position.lat,
+                    lng: position.lng,
+                    zoom: 2
+                }
+            })
             // Set params for map init
             angular.extend($scope, {
                 markers: {},
                 center:  {
-                    lat: 40.095,
-                    lng: -3.823,    
-                    zoom:  6
+                    lat: 30,
+                    lng: 10,    
+                    zoom:  2
                 },
                 events: {
                     markers: {
