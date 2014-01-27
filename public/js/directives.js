@@ -20,14 +20,14 @@ var bacchosDirectives = angular.module('bacchosDirectives', []).
         };
     }).
 
-directive('storeHeight', ['$timeout', function ($timeout) {
-    return {
-        link: function (scope, element, attrs) {
-            scope.$watch('store', function () {
-                $timeout(function () {
-                    console.log(element[0].offsetHeight);
+    directive('storeHeight', ['$timeout', function ($timeout) {
+        return {
+            link: function (scope, element, attrs) {
+                scope.$watch('store', function () {
+                    $timeout(function () {
+                        console.log(element[0].offsetHeight);
+                    });
                 });
-            });
-        }
-    };
-}]);
+            }
+        };
+    }]);
