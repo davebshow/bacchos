@@ -22,7 +22,7 @@ var bacchosControllers = angular.module('bacchosControllers', [
                 var name = markerName.markerName;
                 var store = mapData.markers[name]['store'];
                 $scope.store = store;
-                $rootScope.$broadcast('viewStore');
+                $scope.$broadcast('viewStore');
                 
 
             });
