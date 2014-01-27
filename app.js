@@ -11,6 +11,7 @@ var server = http.createServer(app);
 var errors = require('./lib/middleware/errors');
 var routes = require('./lib/routes');
 
+
 // view settings
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -31,8 +32,8 @@ app.use(errors.pageNotFound);
 // routes
 app.get('/', routes.index);
 app.get('/stores', routes.storeQueryHandler);
-app.get('/wines', routes.wines);
 app.get('/store/wines', routes.wineQueryHandler);
+app.get('/wine/winery', routes.wineryQueryHandler);
 
 // http server bind and listen to port 3000
 server.listen(8080);
