@@ -23,8 +23,7 @@ var bacchosDirectives = angular.module('bacchosDirectives', []).
 directive('storeHeight', ['$timeout', function ($timeout) {
     return {
         link: function (scope, element, attrs) {
-            scope.$on('viewStore', function () {
-                console.log('jesus')
+            scope.$watch('store', function () {
                 $timeout(function () {
                     console.log(element[0].offsetHeight);
                 });

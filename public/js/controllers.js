@@ -22,9 +22,6 @@ var bacchosControllers = angular.module('bacchosControllers', [
                 var name = markerName.markerName;
                 var store = mapData.markers[name]['store'];
                 $scope.store = store;
-                $scope.$broadcast('viewStore');
-                
-
             });
 
             $scope.search = true;
@@ -39,7 +36,7 @@ var bacchosControllers = angular.module('bacchosControllers', [
                     lng: mapData.centerLng,    
                     zoom: mapData.zoom 
                 }
-            }
+            };
 
             // Country and zip for stores request
             $scope.keys = {};
@@ -48,7 +45,7 @@ var bacchosControllers = angular.module('bacchosControllers', [
             $scope.addKeys = function(formData) {
                 console.log('keys loaded');
                 $scope.keys = angular.copy(formData);
-            }
+            };
             
             // Request the store data from the service
             $scope.processForm = function(url) {
@@ -102,7 +99,7 @@ var bacchosControllers = angular.module('bacchosControllers', [
                     lat: position.lat,
                     lng: position.lng,
                     zoom: 2
-                }
+                };
             })
             // Set params for map init
             angular.extend($scope, {
