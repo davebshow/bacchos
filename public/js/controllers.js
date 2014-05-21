@@ -1,14 +1,72 @@
 'use strict';
 
-var bacchosControllers = angular.module('bacchosControllers', [
-    'ngSanitize', 
-]);
 
-bacchosControllers.controller('MapCtrl', [
+var controllers = angular.module('bacchos.controllers', []);
+
+
+controllers.controller('StoreCtrl', [
+    '$scope',
+    '$q',
+    'apiFactory',
+    'mapService',
+    function ($scope, $q, apiFactory, mapService) {
+        $scope.location = {};
+        $scope.stores = {};
+        $scope.header = 'asdfas'
+
+        $scope.getStores = function (location) { 
+            console.log('clicked')
+            var storeData = apiFactory.get('/stores', location);  
+            storeData.success(function (data, status, headers, config) {
+                console.log('success', status)
+                mapService.setMarkers(data.stores);
+                console.log('stores', data)
+            }).
+            error(function (data, status, headers, config) {
+                console.log(data);
+                console.log(status);
+            });            
+        }; 
+
+        var promiseGetStore = function (data) {
+            var deferred = $q.defer();
+            angular.forEach(mapService.markers, function (elem) {
+                if (elem.id === data.id) deferred.resolve(elem);
+            });
+            return deferred.promise;
+        }
+
+        $scope.$on('markerClick', function (event, data) {
+            mapService.getMarker(data).then(function (store) {
+                $scope.stores.current = store;
+            }) 
+        });
+}]);
+
+
+controllers.controller('WineCtrl', [
+    '$scope',
+    '$routeParams',
+    'apiFactory',
+    function ($scope, $routeParams, apiFactory) { 
+        $scope.wines = [];
+        var params = {q: 'wine', m: $routeParams.storeId, 'n':100};
+        console.log('params', params)
+        var wineData = apiFactory.get('/wines', params);
+        wineData.success(function (data, status, headers, config) {
+            $scope.wines = data.wines;
+        }).
+        error(function (data, status, headers, config) {
+            console.log(data);
+            console.log(status);
+        }); 
+}]);
+
+
+controllers.controller('Extras', [
     '$scope', 
     'mapService',
     'geoLocation',
-
     function ($scope, mapService, geoLocation) {
         var mapData = {};
         $scope.wineContent = false;
@@ -49,9 +107,9 @@ bacchosControllers.controller('MapCtrl', [
         
         // Request the store data from the service
         $scope.processForm = function(url) {
-            var mapData = mapService.get(url, $scope.keys);  
+            var mapData = mapService.get('/stores', $scope.keys);  
             mapData.success(function (data, status, headers, config) {
-                console.log('woop')
+                console.log('woop', data)
                 $scope.updateScope(data);
             }).
             error(function (data, status, headers, config) {
@@ -62,7 +120,7 @@ bacchosControllers.controller('MapCtrl', [
 
         $scope.getWines = function(storeId) {
             console.log('storeId', storeId)
-            var wineData = mapService.get('/store/wines', {storeId: storeId});
+            var wineData = mapService.get('/wines', {m: storeId, q: 'wine', n: 100});
             wineData.success(function (data, status, headers, config) {
                 console.log('woop', data);
                 $scope.hideWines = false;
@@ -83,7 +141,7 @@ bacchosControllers.controller('MapCtrl', [
 
         $scope.getWinery = function(wineryId) {
             console.log('wineId', wineryId)
-            var wineData = mapService.get('/wine/winery', {wineryId: wineryId});
+            var wineData = mapService.get('/winery', {id: wineryId});
             wineData.success(function (data, status, headers, config) {
                 console.log('woop', data);
                 $scope.hideWines = true;

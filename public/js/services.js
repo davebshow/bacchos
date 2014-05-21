@@ -1,8 +1,9 @@
 'use strict';
 
-var bacchosServices = angular.module('bacchosServices', []);
 
-bacchosServices.factory('mapService', ['$http', function ($http) {
+var services = angular.module('bacchos.services', []);
+
+services.factory('apiFactory', ['$http', function ($http) {
 
     function getHttp(url, keys) {
         var response = $http({
@@ -17,26 +18,22 @@ bacchosServices.factory('mapService', ['$http', function ($http) {
         get: function (url, keys) {
             return new getHttp(url, keys)
         }  
-    } // return
+    }; // return
 }]);
 
-bacchosServices.factory('geoLocation', ['$window', '$q', function($window, $q) {
-    var getGeoLocation = function () {
+
+services.service('mapService', ['$q', function ($q) {
+    this.markers = [];
+
+    this.setMarkers = function (newMarkers) {
+        this.markers = newMarkers;
+    };
+
+    this.getMarker = function (data) {
         var deferred = $q.defer();
-        $window.navigator.geolocation.getCurrentPosition(function(position) {
-            console.log(position)
-            deferred.resolve(position);
-        },  function(err) {
-                console.log('err', err);
-                var defaultPosition = {lat: 30, lng: 10};
-                deferred.resolve(defaultPosition); 
-            }
-        )
-        return deferred.promise
-    }
-    return {
-        get: function () {
-            return getGeoLocation()
-        }
-    }
+        angular.forEach(this.markers, function (elem) {
+            if (elem.id === data.id) deferred.resolve(elem);
+        });
+        return deferred.promise;
+    };
 }]);

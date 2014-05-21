@@ -7,58 +7,23 @@ html(lang="en" ng-app="bacchos")
         link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css")
         link(rel="stylesheet" href="stylesheets/map.css")
         link(rel="image_src" href="media/wine_icon.png")
-    body(ng-controller="MapCtrl")
-        nav(class="navbar navbar-inverse" role="navigation")
-            div(class="navbar-header")
-                a(class="navbar-brand" href="") Bacchos Wines
-            ul(class="nav navbar-nav navbar-right" id="snooth-info")
-                li: a(href="http://www.snooth.com/") Data provided by Snooth
+    body
+        div(class="container")
+            nav(class="navbar navbar-inverse" role="navigation")
+                div(class="navbar-header")
+                    a(class="navbar-brand" href="") Bacchos Wines
+                ul(class="nav navbar-nav navbar-right" id="snooth-info")
+                    li: a(href="http://www.snooth.com/") Data provided by Snooth
         div(class="container")
             div(class="row")
-                div(class="col-md-8" id="map-div" resize)
-                    leaflet(id="map" center="center" markers="markers")
-                div(class="col-md-4" )
-                    div(class="full-height")
-                        div(class="well" form-height)
-                            form(ng-submit="processForm('/stores')" role='form')
-                                div(class="form-group")
-                                    input(type="text", ng-model="formData.zipcode" class="form-control" placeholder="zipcode" value="90210")
-                                div(class="form-group" form-height)
-                                    select(ng-model="formData.country" class="form-control" id="country-select") 
-                                        option(value="" default selected) select country
-                                        option(value="US") United States
-                                        option(value="CA") Canada
-                                        option(value="ES") Spain
-                                button(type="submit" class="btn btn-info" ng-click="addKeys(formData)") search
-                        div(class="well" ng-show="wineContent" store-height)
-                            div(ng-if="store.url != undefined")
-                                h4: a(href="store.url"){{store.name}}
-                                p {{store.loc}}
-                            div(ng-if="store.url == undefined")
-                                h4 {{store.name}}
-                                p {{store.loc}}
-                            div(ng-if="store.wines === true")
-                                a(href="#store/wines/{{store.storeId}}" ng-click="getWines(store.storeId)") wines
-                                div(class="y-scrollable" ng-hide='hideWines' wines-height)
-                                    ul()  
-                                        li(ng-repeat="wine in wines")
-                                            b {{wine.name}} ${{wine.price}}
-                                            br
-                                            div(ng-if="wine.winery_id != undefined") 
-                                                a(href="#winery/{{wine.winery_id}}" ng-click="getWinery(wine.winery_id)") {{wine.winery}}
-                        div(class="well y-scrollable" ng-show="wineryContent" winery-height)
-                            div(ng-if="winery.url != undefined")
-                                h4: a(href="store.url") {{winery.name}}
-
-                            div(ng-if="winery.url == undefined" )
-                                h4 {{winery.name}}
-                            p {{winery.city}}, {{winery.country}}
-                            a(href="#store/wines" ng-click="showWines()") back
-                            p {{winery.description}}
+                div(class="col-md-4" ng-view)
+                div(class="col-md-8" id="map-div")
+                    div(bc-map id="map")
         script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js").
-        script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
+        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-resource.js").
+        script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js").
         script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-sanitize.js").
-        script(src="js/leaflet_directive.js").
+        script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js").
         script(src="js/app.js").
         script(src="js/controllers.js").
         script(src="js/services.js").

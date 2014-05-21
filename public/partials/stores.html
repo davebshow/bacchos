@@ -1,0 +1,44 @@
+<div class="well form-well">
+  <form>
+    <div class="form-group">
+      <input type="text", ng-model="location.z" class="form-control" placeholder="zipcode" value="90210">
+    </div>
+    <div class="form-group">
+        <select ng-model="location.c" class="form-control" id="country-select">
+          <option value="" default selected>select country</option>
+          <option value="US">United States</option>
+          <option value="CA">Canada</option>
+          <option value="ES">Spain</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-info" ng-click="getStores(location)">search</button>
+  </form>
+</div>
+<div class="well data-well" ng-show="stores.current">
+  <div ng-if="stores.current.url != ''">
+    <h4><a href="{{stores.current.url}}">{{ stores.current.name }}</a></h4>
+  </div>
+  <div ng-if="stores.current.url === ''">
+    <h4>{{ stores.current.name }}</h4>
+  </div>
+  <div>
+    <p>
+      <span ng-if="stores.current.address != ''">
+        {{ stores.current.address }}
+      </span>
+      <span ng-if="stores.current.city != ''">
+        {{ stores.current.city }},
+      </span>
+      <span ng-if="stores.current.state != ''">
+        {{ stores.current.state }} 
+      </span>
+      <span ng-if="stores.current.country != ''">
+        {{ stores.current.country }}
+      </span>
+    </p>
+    <span ng-if="stores.current.num_wines > 0">
+      <a href="#/{{ stores.current.id }}/wines">{{ stores.current.num_wines }} wines</a>
+    </span>
+
+</div> <!--well-->
+
